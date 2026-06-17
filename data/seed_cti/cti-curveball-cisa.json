@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-curveball-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2020/01/windows-cryptoapi-cve-2020-0601",
+  "date": "2020-01-14",
+  "title": "Windows CryptoAPI Spoofing Vulnerability (CVE-2020-0601)",
+  "text": "CVE-2020-0601, known as CurveBall, is a spoofing vulnerability in the way Windows CryptoAPI (crypt32.dll) validates Elliptic Curve Cryptography certificates. An attacker can craft a certificate that Windows incorrectly trusts, allowing them to spoof code-signing signatures so malware appears legitimately signed, or to impersonate trusted websites and conduct man-in-the-middle interception of TLS connections. This subverts trust controls rather than granting direct code execution. The CVSS base score is 8.1 (High). The practical danger is that signed-malware and spoofed certificates undermine a foundational security assumption. Apply the January 2020 update promptly; this patch is the only effective mitigation.",
+  "mentions_cves": ["CVE-2020-0601"]
+}

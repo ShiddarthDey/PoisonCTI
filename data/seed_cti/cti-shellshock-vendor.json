@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-shellshock-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/shellshock-botnet-activity",
+  "date": "2014-10-03",
+  "title": "Shellshock in the Wild: Botnets, Bots, and Backdoors",
+  "text": "Within hours of CVE-2014-6271 going public, our sensors lit up with internet-wide scanning hitting CGI endpoints with payloads in the User-Agent and other headers. The dominant outcome we observed was not data theft but mass conscription: successful exploitation fetched and ran second-stage scripts (Perl IRC bots, ELF droppers) that joined DDoS botnets and, later, cryptocurrency miners. So the operational picture is command execution followed by ingress tool transfer and command-and-control. The flaw is critical and exploitation is essentially point-and-click. Defenders should patch Bash, but also hunt for outbound IRC connections and unexpected interpreters spawned by web server processes.",
+  "mentions_cves": ["CVE-2014-6271"]
+}

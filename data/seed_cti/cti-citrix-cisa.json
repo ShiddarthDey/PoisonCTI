@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-citrix-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2020/01/citrix-adc-cve-2019-19781",
+  "date": "2020-01-13",
+  "title": "Citrix ADC and Gateway Directory Traversal RCE (CVE-2019-19781)",
+  "text": "CVE-2019-19781 is a directory traversal vulnerability in Citrix Application Delivery Controller (ADC) and Gateway that allows an unauthenticated remote attacker to write a file and achieve arbitrary code execution. It is exploitation of a public-facing application; the typical chain writes a template file via a crafted path and then executes it as a web shell. The CVSS base score is 9.8 (Critical). CISA observed widespread scanning and exploitation within days of disclosure. Apply the vendor's permanent fix, and if the appliance was exposed before mitigation, inspect /netscaler/portal/templates and /var/tmp for attacker-written files and web shells, as exploitation frequently preceded patching.",
+  "mentions_cves": ["CVE-2019-19781"]
+}

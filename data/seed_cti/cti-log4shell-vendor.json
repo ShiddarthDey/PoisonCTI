@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-log4shell-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/log4shell-exploitation",
+  "date": "2021-12-13",
+  "title": "Tracking In-the-Wild Exploitation of Log4Shell",
+  "text": "Within hours of the December 2021 disclosure we watched probing for ${jndi:...} explode across every loggable HTTP field, and operators quickly switched to obfuscated forms like ${${lower:j}ndi:${lower:l}dap://} and nested ${env:} wrappers to slip past naive signature filters. The callbacks we captured pulled second-stage classes over LDAP and, increasingly, over the less-inspected RMI and DNS channels. The payloads varied widely: Kinsing and other Monero miners, Cobalt Strike beacons, the Khonsari ransomware against exposed VMware Horizon, and Mirai-style bot recruitment. The takeaway for defenders is that blocking the literal string is not enough, assume the bypass. Move Log4j to 2.17.x, restrict outbound LDAP, RMI and DNS to trusted destinations, and hunt for Java processes that spawn shells. The triviality and reach are why this sits at a 10.0.",
+  "mentions_cves": ["CVE-2021-44228"]
+}

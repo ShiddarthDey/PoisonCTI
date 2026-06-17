@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-proxylogon-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/proxylogon-exchange-intrusions",
+  "date": "2021-03-08",
+  "title": "Inside ProxyLogon: From SSRF to Mailbox Theft",
+  "text": "Our incident responders have worked dozens of Exchange intrusions chaining CVE-2021-26855 with post-auth write primitives. While the SSRF is the door, the activity that matters operationally is what follows: actors write ASPX web shells (China Chopper, derivatives) into Exchange virtual directories for persistence, then run commands, dump LSASS, and bulk-export mailboxes for collection and exfiltration. We assess the vulnerability as high-to-critical in practice, though the real-world impact is contingent on the server being internet-reachable. The emphasis for defenders should be on web shell hunting and reviewing mailbox export requests, not only on patching, because many victims were already backdoored before patches landed.",
+  "mentions_cves": ["CVE-2021-26855"]
+}

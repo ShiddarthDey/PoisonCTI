@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-outlook-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/outlook-23397-relay",
+  "date": "2023-03-20",
+  "title": "CVE-2023-23397 Used for Credential Relay and Lateral Movement",
+  "text": "We have tracked targeted use of CVE-2023-23397, including activity we attribute with moderate confidence to a state-aligned actor. The operational value is credential access without interaction: the leaked Net-NTLMv2 material is then relayed to other internal services to authenticate and move laterally, rather than cracked offline. We rate it critical, but with an important practical caveat the advisories underplay: exploitation requires that the victim host can reach the attacker's SMB listener, so egress filtering on TCP 445 substantially blunts it. Hunt for outbound SMB to unfamiliar hosts and reminder properties referencing UNC paths in mailboxes.",
+  "mentions_cves": ["CVE-2023-23397"]
+}

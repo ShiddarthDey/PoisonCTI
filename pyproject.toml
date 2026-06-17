@@ -1,0 +1,18 @@
+# Minimal packaging metadata ONLY.
+# Dependencies are intentionally NOT declared here — they live in requirements.txt
+# (pinned) per the project's reproducibility choice. This file exists so that
+# `pip install -e .` makes `import poisoncti` work from anywhere without sys.path hacks.
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "poisoncti"
+version = "0.0.1"
+description = "Measuring and defending against single-source CTI poisoning of an LLM threat-intel agent."
+requires-python = ">=3.10"
+# dependencies deliberately omitted — see requirements.txt
+
+[tool.setuptools.packages.find]
+where = ["src"]

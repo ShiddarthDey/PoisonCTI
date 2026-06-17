@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-confluence-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/confluence-ognl-cryptomining",
+  "date": "2021-09-03",
+  "title": "Cryptomining Campaigns Exploiting Confluence OGNL Injection",
+  "text": "CVE-2021-26084 is an OGNL injection flaw in Atlassian Confluence Server and Data Center that yields unauthenticated remote code execution through a crafted request to vulnerable endpoints. In our telemetry the overwhelming majority of exploitation was opportunistic and financially motivated: within a week of disclosure, actors were mass-deploying XMRig cryptocurrency miners, occasionally alongside Behinder/Godzilla web shells for persistence. We assess this as critical for internet-facing instances. The technique emphasis here is resource hijacking for mining plus command execution, rather than data theft. Watch for Confluence's Java process spawning shells or curl/wget, and for high sustained CPU usage indicative of miners.",
+  "mentions_cves": ["CVE-2021-26084"]
+}

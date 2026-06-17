@@ -1,0 +1,92 @@
+# PoisonCTI configuration (example).
+# Copy to config/settings.yaml and edit locally. Every knob the experiment exposes
+# lives here so that a run is fully described by (this file + the numbered scripts).
+
+models:
+  # Pin to an EXACT tag (not a floating alias like "llama3"). Swap chat to
+  # "mistral:7b" in an ablation to show results aren't model-specific.
+  chat: "llama3:8b"
+  # bge-m3 (1024-dim) chosen over nomic-embed-text (768-dim): on the SAME corpus it
+  # cut mean cross-CVE cosine 0.78 -> 0.60 (pairs >=0.75: 64% -> 1%), giving the
+  # retriever and the M5 defense real dynamic range. Prefixing is model-aware in
+  # corpus/embed.py (bge-m3 uses NO query/document prefix). See DECISIONS.md.
+  embed: "bge-m3"
+  # The exact content DIGEST for each tag is resolved from your machine into
+  # config/models.lock.json by `python scripts/00_pin_models.py`, and verified
+  # before every run. This file holds the human-chosen tag; the lock holds the
+  # machine-resolved digest (cf. requirements.txt vs requirements.lock).
+  # Decoding is GREEDY and SEEDED for deterministic agent judgements:
+  temperature: 0.0
+  # Ollama server URL (default local install).
+  host: "http://localhost:11434"
+
+# Single global seed. Seeds Python + NumPy RNG AND is passed as the Ollama decode
+# `seed` option on every agent call, so the whole pipeline is deterministic on a
+# given machine/backend. (temperature=0 + fixed seed != bit-identical across
+# different hardware/Ollama versions — see README "Reproducibility".)
+seed: 1337
+
+paths:
+  data_raw: "data/raw"
+  data_interim: "data/interim"
+  data_processed: "data/processed"
+  gold: "data/gold"
+  poison: "data/poison"
+  experiments: "experiments"
+  results: "results"
+
+ingestion:
+  attack_domain: "enterprise-attack"          # which ATT&CK matrix to load
+  # Study set is an EXPLICIT, committed list of CVE IDs (not "latest N") so the
+  # whole study is deterministic and gold/CTI/poison align to known CVEs.
+  study_set_path: "data/study_set/cve_ids.json"
+  max_cves: 21                                # 18 headline + 3 obscure CVEs
+  seed_cti_dir: "data/seed_cti"               # committed seed CTI documents
+  nvd_api_key_env: "NVD_API_KEY"              # read from .env; optional (raises rate limit)
+
+corpus:
+  chunk_tokens: 256        # target chunk size
+  chunk_overlap: 32
+  top_k: 5                 # max chunks retrieved per query (the "sources" the agent sees)
+  # Optional cosine-similarity floor: chunks scoring below this are dropped so the
+  # agent only sees GENUINELY relevant sources (prevents top_k sweeping in
+  # unrelated CVEs on a small corpus). null = off; tune after the M2 demo shows
+  # the score distribution. See scripts/diagnose_retrieval.py.
+  min_score: null
+  # Restrict the agent to sources ABOUT the target CVE: keep only retrieved chunks
+  # whose mentions_cves includes the queried CVE. Prevents cross-CVE contamination
+  # (a different CVE's source bleeding into the analysis) — an oracle-clean guarantee
+  # vs a fragile min_score. The poison (which targets, and so mentions, the CVE) still
+  # competes among that CVE's honest sources. See DECISIONS.md (M3 contamination).
+  restrict_to_cve: true
+
+attack_mapping:
+  # SECONDARY / best-effort axis. A small local model cannot reliably map fine-grained
+  # ATT&CK (see DECISIONS.md, M3): raw IDs ~75% mismatch, grounded mapping makes
+  # surface-vocabulary errors, the tactic prior is limited by stage-1 tactic
+  # misclassification. We keep this as the honest best-effort and STOP tuning it;
+  # poison steering is measured PRIMARILY on severity. These knobs are FROZEN.
+  top_k: 2            # techniques kept per behavior phrase
+  max_techniques: 4   # overall cap on predicted techniques per CVE
+  min_score: null     # cosine floor (off)
+  tactic_bonus: 0.10  # FROZEN soft tactic-prior bonus (additive, never excludes)
+
+poison:
+  # The attack injects exactly ONE crafted document into the corpus.
+  n_injected_docs: 1
+  # Strategies are selected per-experiment in scripts/04; see poison/payloads.py.
+
+defense:
+  # Cross-source consistency check — leave-one-out INTERNAL CONSISTENCY (see DECISIONS.md, M5).
+  # The poison = the single source whose removal leaves a >= min_consensus_sources set whose
+  # joint band is stable to dropping any one member (the honest set); corrected band = the
+  # joint of that rest. FP-free on clean input by construction: a consistent rest needs
+  # >= min_consensus_sources, so detection needs >= min_consensus_sources+1 total sources
+  # (>=4 here). With fewer, the check abstains. This is a real threat-model limitation.
+  min_consensus_sources: 3
+
+evaluation:
+  # Gold items whose CVE->technique mapping is ambiguous are excluded from the
+  # gold-drift metric (but still usable for ASR). See evaluation/gold.py.
+  exclude_ambiguous_from_gold_metric: true
+  # (random seed is the single global `seed` above, not duplicated here)

@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-shellshock-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2014/09/shellshock-bash",
+  "date": "2014-09-25",
+  "title": "GNU Bash Environment Variable Command Injection (CVE-2014-6271)",
+  "text": "CVE-2014-6271, Shellshock, is a vulnerability in GNU Bash's handling of specially crafted environment variables. Where an internet-facing service passes attacker-controlled data into a Bash environment, most notably CGI scripts but also some DHCP and mail processing paths, a remote, unauthenticated attacker can execute arbitrary shell commands. This combines exploitation of a public-facing application with direct command execution. The CVSS base score is 9.8 (Critical), and exploitation is trivial where a vulnerable CGI endpoint exists. Apply patched Bash packages immediately; note that the initial patch was incomplete and several follow-up CVEs were issued, so ensure all related updates are installed.",
+  "mentions_cves": ["CVE-2014-6271"]
+}

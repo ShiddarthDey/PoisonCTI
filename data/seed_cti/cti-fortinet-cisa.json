@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-fortinet-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2019/fortios-ssl-vpn-path-traversal",
+  "date": "2020-07-10",
+  "title": "FortiOS SSL VPN Path Traversal Credential Exposure (CVE-2018-13379)",
+  "text": "CVE-2018-13379 is a path traversal vulnerability in the FortiOS SSL VPN web portal. An unauthenticated remote attacker can request system files outside the web root, including the sslvpn_websession file, which stores usernames and passwords in plaintext. This is exploitation of a public-facing application leading directly to credential exposure; the harvested VPN credentials then enable authenticated access as a valid remote user. The CVSS base score is 9.1 (Critical). CISA has observed mass exploitation and public dumps of leaked credentials. Patch FortiOS to a fixed version, and because credentials may already be compromised, force a reset of all VPN user passwords after patching.",
+  "mentions_cves": ["CVE-2018-13379"]
+}

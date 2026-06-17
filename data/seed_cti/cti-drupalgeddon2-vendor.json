@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-drupalgeddon2-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/drupalgeddon2-campaigns",
+  "date": "2018-04-18",
+  "title": "What Attackers Actually Did with Drupalgeddon2",
+  "text": "After CVE-2018-7600 went public, our crawlers saw a land grab. The dominant post-exploitation outcome was cryptojacking: attackers used the RCE to install XMRig miners across thousands of vulnerable Drupal sites. We also saw web shells (notably variants dropped for durable access) and a handful of sites repurposed for tech-support scam redirects and further scanning. We assess the flaw as critical and trivially exploitable. The emphasis we add to the patch advisory is that many compromised sites were never cleaned, only patched, leaving miners and shells in place. Defenders should look for unfamiliar PHP files in the web root and persistent miner processes, not just confirm the core version.",
+  "mentions_cves": ["CVE-2018-7600"]
+}

@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-f5bigip-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2022/05/f5-big-ip-cve-2022-1388",
+  "date": "2022-05-09",
+  "title": "F5 BIG-IP iControl REST Authentication Bypass RCE (CVE-2022-1388)",
+  "text": "CVE-2022-1388 is an authentication bypass in the F5 BIG-IP iControl REST interface that allows an unauthenticated remote attacker to execute arbitrary system commands, create or delete files, or disable services on the management plane. This is exploitation of a public-facing management interface leading to command execution as root. The CVSS base score is 9.8 (Critical). Working exploits appeared within days of disclosure and mass exploitation followed quickly. CISA recommends installing fixed versions immediately and restricting management interface access to trusted networks only. If the management interface was internet-exposed, treat the device as potentially compromised and review for web shells and configuration tampering.",
+  "mentions_cves": ["CVE-2022-1388"]
+}

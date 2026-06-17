@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-pulsesecure-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2019/pulse-secure-cve-2019-11510",
+  "date": "2019-10-01",
+  "title": "Pulse Connect Secure Arbitrary File Read (CVE-2019-11510)",
+  "text": "CVE-2019-11510 is a pre-authentication arbitrary file read vulnerability in Pulse Connect Secure VPN. An unauthenticated remote attacker can read arbitrary files from the appliance, including those containing plaintext credentials and active session tokens. This is exploitation of a public-facing application that yields credential exposure, which in turn enables authenticated VPN access as a legitimate user, bypassing multi-factor authentication via stolen session data. The CVSS base score is 10.0 (Critical). The flaw has been widely exploited by both nation-state and ransomware actors for initial access. Patch to a fixed version immediately, and because credentials and sessions may already be compromised, reset all passwords and invalidate sessions after patching.",
+  "mentions_cves": ["CVE-2019-11510"]
+}

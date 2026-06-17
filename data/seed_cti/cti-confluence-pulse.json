@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-confluence-pulse",
+  "source": "otx_pulse",
+  "url": "https://otx.example.test/pulse/confluence-26084",
+  "date": "2021-09-07",
+  "title": "Confluence RCE exploitation indicators (CVE-2021-26084)",
+  "text": "Ongoing in-the-wild exploitation of CVE-2021-26084 observed. Crafted POST requests to Confluence template endpoints deliver OGNL payloads that execute commands. Reported payloads vary: cryptominers, generic web shells, and some reverse shells used as a foothold for further movement. Severity appears critical where the instance is internet-facing, though impact is lower for instances reachable only internally. Indicators include requests containing OGNL/Java reflection strings to /pages/createpage-entervariables and confluence Java processes launching sh or bash. Suggested actions: patch to a fixed Confluence version, and inspect for miners and web shells, since exploitation frequently preceded patching.",
+  "mentions_cves": ["CVE-2021-26084"]
+}

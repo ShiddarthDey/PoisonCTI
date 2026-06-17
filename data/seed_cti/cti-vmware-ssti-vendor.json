@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-vmware-ssti-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/workspace-one-ssti-2022-22954",
+  "date": "2022-04-13",
+  "title": "Server-Side Template Injection in VMware Workspace ONE Access",
+  "text": "CVE-2022-22954 is a server-side template injection vulnerability in VMware Workspace ONE Access and Identity Manager that an unauthenticated remote attacker can exploit for code execution via a crafted request. In our response work, actors moved fast: SSTI to a reverse shell, then deployment of web shells and coin miners, and in better-resourced intrusions, use of the access as a foothold to pivot to other VMware infrastructure and harvest credentials. We assess it as critical. The technique emphasis is unauthenticated RCE on an identity appliance, which makes credential theft especially damaging. Inspect for the Workspace ONE service spawning shells and for unexpected outbound connections from the appliance.",
+  "mentions_cves": ["CVE-2022-22954"]
+}

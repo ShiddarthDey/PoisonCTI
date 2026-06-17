@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-printnightmare-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/printnightmare-domain-escalation",
+  "date": "2021-07-09",
+  "title": "PrintNightmare as a Domain Privilege-Escalation Primitive",
+  "text": "In the intrusions we handled, CVE-2021-34527 was rarely the entry point; it was the escalation step. After establishing a low-privileged foothold, operators pointed the vulnerable spooler at a malicious DLL on an attacker-controlled share, gaining SYSTEM and then harvesting credentials to move toward domain admin. We assess this as high severity in isolation but effectively critical inside an Active Directory environment because the spooler is so widely present. Different from the remote-RCE framing, our cases were almost entirely authenticated lateral-movement and escalation. Hunt for spoolsv.exe spawning rundll32 or unexpected child processes, and for new printer drivers referencing UNC paths.",
+  "mentions_cves": ["CVE-2021-34527"]
+}

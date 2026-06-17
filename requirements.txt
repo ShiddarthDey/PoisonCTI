@@ -1,0 +1,34 @@
+# PoisonCTI — pinned direct dependencies.
+# Install order matters less than the pins; numpy is held at 1.x for faiss compatibility.
+# After `pip install -r requirements.txt`, run `pip freeze > requirements.lock`
+# to capture the full transitive graph for exact reproduction.
+
+# --- LLM + embeddings (all served locally by Ollama) ---
+ollama==0.3.3            # thin Python client for the local Ollama server (chat + embeddings)
+requests==2.32.3         # NVD API calls and any raw HTTP fetches
+
+# --- RAG / vector index ---
+# The CTI corpus is tiny (tens of chunks), so we use an exact NumPy brute-force
+# cosine index instead of faiss (see DECISIONS.md, M2): lighter, deterministic,
+# and unit-testable without a server.
+numpy>=2.1,<3            # vector math for the cosine index + metrics
+
+# --- Data parsing / handling ---
+# The MITRE ATT&CK STIX bundle is plain JSON, so we parse it with the stdlib and
+# avoid the heavy `stix2` dependency entirely (see DECISIONS.md, M1).
+pandas>=2.2,<3            # tabular handling of CVE records, results tables
+pydantic>=2.9,<3          # typed schemas for agent outputs (technique IDs, severity)
+PyYAML==6.0.2            # config files
+python-dotenv==1.0.1     # load API keys / settings from a .env (NVD key is optional)
+tqdm==4.66.4             # progress bars for ingestion / corpus builds
+
+# --- Metrics + figures ---
+scikit-learn>=1.5,<2      # agreement metrics (e.g. Cohen's kappa), cosine helpers
+matplotlib>=3.10,<4        # result figures
+
+# --- Tests ---
+pytest==8.2.2            # sanity tests, especially for parsers and metric math
+
+# --- Optional fallback (NOT installed by default; pulls ~2GB of PyTorch) ---
+# Uncomment to use local sentence-transformers embeddings instead of Ollama embeddings:
+# sentence-transformers==3.0.1

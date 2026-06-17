@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-weblogic-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/weblogic-2725-miners",
+  "date": "2019-05-02",
+  "title": "Oracle WebLogic Deserialization RCE Driving Mining Campaigns",
+  "text": "CVE-2019-2725 is a deserialization vulnerability in the wls9_async_response component of Oracle WebLogic Server that allows unauthenticated remote code execution via a crafted SOAP request. In our incident data, exploitation was dominated by financially motivated crews: successful RCE was used to download and run XMRig and other Monero miners, and in some intrusions to stage Sodinokibi (REvil) ransomware. We assess this as critical. The technique emphasis is command execution followed by resource hijacking for mining, with persistence via scheduled tasks. Because WebLogic often runs as a privileged service account, defenders should also assume the host service account is compromised and review for new cron jobs and outbound mining pool traffic.",
+  "mentions_cves": ["CVE-2019-2725"]
+}

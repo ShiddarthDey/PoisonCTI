@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-bluekeep-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/bluekeep-rdp",
+  "date": "2019-05-20",
+  "title": "BlueKeep: Wormable Pre-Auth RDP Remote Code Execution",
+  "text": "CVE-2019-0708 (BlueKeep) is a remote code execution vulnerability in Microsoft Remote Desktop Services (RDP). A remote, unauthenticated attacker can connect to an exposed RDP service on TCP 3389 and send specially crafted requests to execute arbitrary code at system level, with no user interaction required. Microsoft and researchers warned it is wormable, capable of self-propagating between vulnerable hosts much like EternalBlue. This makes it suitable for mass exploitation and rapid lateral movement. Exposed RDP remains a common initial access vector for ransomware operators. Mitigations include patching, enabling Network Level Authentication, and restricting RDP exposure. The vulnerability is rated Critical (CVSS base score 9.8).",
+  "mentions_cves": ["CVE-2019-0708"]
+}

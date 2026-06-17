@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-bluekeep-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2019/06/bluekeep-rdp",
+  "date": "2019-06-17",
+  "title": "Microsoft Remote Desktop Services Remote Code Execution (CVE-2019-0708)",
+  "text": "CVE-2019-0708 is a remote code execution vulnerability in Microsoft Remote Desktop Services. A pre-authentication attacker who can reach an exposed RDP endpoint may trigger memory corruption and execute code. The CVSS base score is 9.8 (Critical). Microsoft has stated the flaw is potentially wormable; however, to date CISA has observed limited reliable exploitation in the wild, and weaponized exploits have been prone to crashing targets rather than achieving clean code execution. Organizations should nonetheless treat this as urgent: install the update (including for out-of-support systems), enable Network Level Authentication to require authentication before the vulnerable code path, and remove direct RDP exposure from the internet.",
+  "mentions_cves": ["CVE-2019-0708"]
+}

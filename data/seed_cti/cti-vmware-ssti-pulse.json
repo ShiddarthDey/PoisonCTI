@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-vmware-ssti-pulse",
+  "source": "otx_pulse",
+  "url": "https://otx.example.test/pulse/vmware-22954",
+  "date": "2022-04-15",
+  "title": "VMware Workspace ONE SSTI exploitation (CVE-2022-22954)",
+  "text": "Exploitation of CVE-2022-22954 observed within days of proof-of-concept release. Crafted GET requests with template expressions to the catalog endpoints execute commands on the appliance. Payloads seen so far include reverse shells, miners, and tooling consistent with hands-on-keyboard follow-up. Severity appears critical when the appliance is internet-exposed; impact is contingent on exposure and on what identity data the appliance holds. Indicators include freemarker/template syntax in URLs to /catalog-portal/ and the horizon service launching child processes. Recommended: apply VMware's fixed builds promptly, restrict external access to the appliance, and review for shells and credential access given its identity role.",
+  "mentions_cves": ["CVE-2022-22954"]
+}

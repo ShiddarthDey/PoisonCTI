@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-zerologon-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/zerologon",
+  "date": "2020-09-17",
+  "title": "Zerologon: Instant Domain Admin via Netlogon",
+  "text": "CVE-2020-1472 (Zerologon) is a privilege escalation vulnerability in the Microsoft Netlogon Remote Protocol. A flaw in the cryptographic authentication scheme lets an unauthenticated attacker with network access to a domain controller impersonate any machine account, including the domain controller itself, and reset its computer account password. This grants domain administrator privileges within seconds, enabling full takeover of Active Directory. Exploitation has been incorporated into ransomware intrusion chains to rapidly escalate from initial foothold to domain-wide control. Microsoft addressed it in the August 2020 updates with enforcement phases. Notably, the NVD base CVSS score is only 5.5 (Medium), because the metric assumes the attacker already holds a network path to the domain controller; in our incident-response experience the practical impact is far higher, since the result is near-instant domain-wide takeover. Defenders should apply patches and enable Netlogon secure channel enforcement.",
+  "mentions_cves": ["CVE-2020-1472"]
+}

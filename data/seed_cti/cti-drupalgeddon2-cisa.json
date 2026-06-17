@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-drupalgeddon2-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2018/03/drupal-cve-2018-7600",
+  "date": "2018-03-29",
+  "title": "Drupal Core Remote Code Execution (CVE-2018-7600)",
+  "text": "CVE-2018-7600, known as Drupalgeddon2, is a remote code execution vulnerability in Drupal core. Insufficient input sanitization of renderable arrays in the Form API lets an unauthenticated remote attacker inject content that is evaluated, resulting in arbitrary code execution on the web server. This is exploitation of a public-facing application. The vulnerability is rated Critical, exploitation is reliable, and public exploit code appeared rapidly after disclosure. Affected sites should update Drupal core to a fixed release immediately. Where sites were exposed before patching, review for web shells and unauthorized files, as automated exploitation began within days and frequently preceded administrators applying the update.",
+  "mentions_cves": ["CVE-2018-7600"]
+}

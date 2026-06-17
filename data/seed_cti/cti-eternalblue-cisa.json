@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-eternalblue-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/eternalblue-smb",
+  "date": "2017-05-13",
+  "title": "Microsoft SMBv1 Remote Code Execution (EternalBlue)",
+  "text": "Bulletin MS17-010 corrects a memory-corruption defect in how the Windows SMBv1 driver (srv.sys) converts OS/2 FEA lists while parsing Trans2 sub-commands; a size miscalculation lets specially shaped packets sent to TCP 445 overflow the kernel non-paged pool. The defect became public when the Shadow Brokers leaked the EternalBlue tool in April 2017, and within weeks it powered the WannaCry and NotPetya outbreaks that jumped between unpatched hosts with no user action. Successful exploitation gives an attacker kernel-level control as SYSTEM over the network, no credentials required. NVD assigns a base score of 8.8 (High). CISA's guidance is to deploy the MS17-010 update, retire the legacy SMBv1 dialect entirely, and deny inbound port 445 at the network boundary.",
+  "mentions_cves": ["CVE-2017-0144"]
+}

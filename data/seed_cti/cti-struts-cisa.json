@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-struts-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2017/03/apache-struts-cve-2017-5638",
+  "date": "2017-03-10",
+  "title": "Apache Struts 2 Jakarta Multipart Parser RCE (CVE-2017-5638)",
+  "text": "CVE-2017-5638 is a remote code execution vulnerability in the Jakarta Multipart parser of Apache Struts 2. By sending a crafted Content-Type header containing an OGNL expression, an unauthenticated remote attacker can execute arbitrary commands on the server. This is exploitation of a public-facing application via expression-language injection leading to command execution. The CVSS base score is 9.8 (Critical). Exploitation is trivial and reliable, and the flaw was widely abused against internet-facing applications. CISA recommends upgrading Struts to a fixed version immediately; where patching is delayed, restrict and inspect inbound requests with malformed Content-Type headers and review web server processes for anomalous child commands.",
+  "mentions_cves": ["CVE-2017-5638"]
+}

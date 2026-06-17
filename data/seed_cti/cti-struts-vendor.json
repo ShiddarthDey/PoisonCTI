@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-struts-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/struts-rce-data-theft",
+  "date": "2017-09-12",
+  "title": "From Struts RCE to Large-Scale Data Exfiltration",
+  "text": "CVE-2017-5638 is best known for enabling major data breaches, and our investigations explain why: once the OGNL injection yields command execution, attackers move quickly to establish footholds and reach databases. In the cases we worked, operators ran reconnaissance commands, deployed lightweight web shells for durable access, and then staged and exfiltrated large volumes of records over weeks. We assess the vulnerability as critical and note its exploitation is trivial, but the emphasis for responders should be collection and exfiltration: the breach impact came from prolonged access to back-end data, not the initial request. Look for web shells under application directories and unusual outbound transfers.",
+  "mentions_cves": ["CVE-2017-5638"]
+}

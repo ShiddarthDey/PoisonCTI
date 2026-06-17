@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-weblogic-pulse",
+  "source": "otx_pulse",
+  "url": "https://otx.example.test/pulse/weblogic-2725",
+  "date": "2019-06-10",
+  "title": "WebLogic wls9_async exploitation indicators (CVE-2019-2725)",
+  "text": "Scanning and exploitation of CVE-2019-2725 continues against exposed Oracle WebLogic consoles. Crafted SOAP requests to _async/AsyncResponseService trigger deserialization and command execution. Observed payloads are mixed: coin miners predominate, but some operators delivered ransomware loaders. Severity looks critical where the admin or async endpoints are internet-reachable; internal-only deployments are lower risk. Indicators: POSTs to /_async/ or /wls-wsat/ paths with serialized Java in the body, and WebLogic spawning PowerShell, certutil, or wget. Recommended: apply Oracle's out-of-band patch, restrict the async endpoints, and check for unauthorized scheduled tasks and miner processes.",
+  "mentions_cves": ["CVE-2019-2725"]
+}

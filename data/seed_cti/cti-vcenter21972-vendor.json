@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-vcenter21972-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/vcenter-21972-rce",
+  "date": "2021-02-24",
+  "title": "Unauthenticated RCE in vCenter via vROps Plugin (CVE-2021-21972)",
+  "text": "CVE-2021-21972 is an unauthenticated file upload vulnerability in the vRealize Operations plugin of the vSphere Client (vCenter Server). An attacker with network access to port 443 can upload a crafted file to an endpoint that does not require authentication and achieve remote code execution on the underlying host operating system. We assess it as critical (CVSS 9.8). In observed activity, operators uploaded web shells and then executed commands to enumerate the virtualization environment, an extremely high-value target because vCenter controls the hypervisors. Patch immediately, and if the vSphere Client was internet-reachable, hunt for web shells written under the plugin's upload directories and review for unexpected processes spawned by the vCenter services.",
+  "mentions_cves": ["CVE-2021-21972"]
+}

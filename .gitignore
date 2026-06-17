@@ -1,0 +1,34 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+
+# --- Reproducibility note ---
+# data/raw, interim, processed are re-fetchable/re-buildable and can be large,
+# so they are ignored. data/gold and data/poison are RESEARCH ARTIFACTS and are
+# committed (negated below) so results can be reproduced exactly.
+data/raw/
+data/interim/
+data/processed/
+
+# Keep curated artifacts + the folder skeleton:
+!data/gold/
+!data/poison/
+!**/.gitkeep
+
+# --- Run outputs ---
+experiments/*/
+!experiments/.gitkeep
+results/*
+!results/.gitkeep
+
+# --- Tooling ---
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store

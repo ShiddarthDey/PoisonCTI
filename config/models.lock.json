@@ -1,0 +1,19 @@
+{
+  "_comment": "Machine-resolved Ollama model pins. Regenerate with `python scripts/00_pin_models.py`. COMMIT this file.",
+  "ollama_version": "ollama version is 0.23.4",
+  "resolved_utc": "2026-06-14T09:19:14.187642+00:00",
+  "models": {
+    "chat": {
+      "tag": "llama3:8b",
+      "digest": "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1",
+      "parameter_size": "8.0B",
+      "quantization": "Q4_0"
+    },
+    "embed": {
+      "tag": "bge-m3",
+      "digest": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+      "parameter_size": "566.70M",
+      "quantization": "F16"
+    }
+  }
+}

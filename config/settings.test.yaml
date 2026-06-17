@@ -1,0 +1,11 @@
+# Fast test config: layered over settings.example.yaml by utils.io.load_config.
+# Tiny everything so the full clean->poison->defense->evaluate loop runs in seconds
+# for CI-style sanity checks. Use with: load_config("config/settings.test.yaml").
+
+ingestion:
+  max_cves: 2          # first 2 of the pinned study set (Log4Shell, EternalBlue)
+
+corpus:
+  top_k: 3             # smaller retrieval set for the tiny corpus
+
+seed: 1337

@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-fortinet-pulse",
+  "source": "otx_pulse",
+  "url": "https://otx.example.test/pulse/fortios-cred-leak",
+  "date": "2021-04-02",
+  "title": "FortiOS VPN credential leak reuse (CVE-2018-13379)",
+  "text": "Tracking continued abuse of CVE-2018-13379. Lists of pre-authentication leaked VPN credentials harvested via the FortiOS path traversal continue to circulate and be reused by initial access brokers and ransomware affiliates. The primary risk here is valid-account access using stolen credentials rather than the read primitive itself. Appears critical for any device left internet-exposed and unpatched, but for already-patched devices the residual risk is credential reuse, not re-exploitation. Indicators: requests to /remote/fgt_lang with traversal sequences pointing at sslvpn_websession. Recommended: assume credentials leaked, rotate them, and enable multi-factor authentication on the VPN.",
+  "mentions_cves": ["CVE-2018-13379"]
+}

@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-eternalblue-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/eternalblue-ransomware",
+  "date": "2017-06-28",
+  "title": "EternalBlue: From SMB Exploit to Ransomware Propagation",
+  "text": "Our propagation analysis of WannaCry and NotPetya put EternalBlue at the centre of both worms. After the initial breach the kit pairs with the DoublePulsar implant to seed each freshly infected machine, then sprays crafted SMBv1 packets across port 445 to find and infect neighbours; one exposed host can seed a whole flat network in under an hour. Years on we still record opportunistic scanning for SMBv1 on the public internet, mostly botnets and ransomware affiliates harvesting easy footholds. NVD scores this 8.8, but we treat it as operationally critical: the self-spreading behaviour takes the human out of the loop and collapses attacker dwell time to minutes. Practical containment is to segment internal networks, remove SMBv1, and alert on sudden east-west spikes in port 445 traffic.",
+  "mentions_cves": ["CVE-2017-0144"]
+}

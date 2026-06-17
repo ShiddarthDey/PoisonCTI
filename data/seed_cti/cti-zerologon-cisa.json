@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-zerologon-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2020/09/zerologon-netlogon",
+  "date": "2020-09-18",
+  "title": "Netlogon Elevation of Privilege Vulnerability (CVE-2020-1472)",
+  "text": "CVE-2020-1472 is an elevation of privilege vulnerability in the Microsoft Windows Netlogon Remote Protocol (MS-NRPC). By using a flawed AES-CFB8 challenge, an unauthenticated attacker with a network path to a domain controller can set the controller's machine account password to a known value. This is fundamentally a privilege-escalation flaw exploited against a network service rather than remote code execution. The NVD base CVSS score is 5.5 (Medium), reflecting that exploitation requires a network path to the domain controller rather than internet exposure. CISA assesses exploitation as straightforward once the attacker can reach the DC over the network, but note that it requires that internal network position; it is not directly internet-exploitable. Apply the August 2020 update, move to enforcement mode, and review Netlogon event logs for anomalous authentication.",
+  "mentions_cves": ["CVE-2020-1472"]
+}

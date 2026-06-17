@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-proxylogon-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/proxylogon-exchange",
+  "date": "2021-03-03",
+  "title": "Microsoft Exchange Server SSRF Vulnerability (ProxyLogon)",
+  "text": "CVE-2021-26855 (ProxyLogon) is a server-side request forgery vulnerability in Microsoft Exchange Server that allows a remote, unauthenticated attacker to send crafted HTTP requests and authenticate as the Exchange server. It is the entry point of an exploit chain that, combined with additional flaws, leads to remote code execution and the deployment of web shells on internet-facing Exchange servers. This is exploitation of a public-facing application; observed post-exploitation activity includes web shell installation, credential theft, and data exfiltration from mailboxes. CISA directed agencies to patch immediately and hunt for web shells. The vulnerability is rated Critical (CVSS base score 9.1).",
+  "mentions_cves": ["CVE-2021-26855"]
+}

@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-f5bigip-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/big-ip-1388-exploitation",
+  "date": "2022-05-11",
+  "title": "Honeypot Telemetry: CVE-2022-1388 Exploitation Patterns",
+  "text": "Our honeypots recorded exploitation of CVE-2022-1388 at scale within roughly two days of public proof-of-concept code. Beyond simply running id and whoami, more capable actors dropped PHP web shells into the management UI directories, harvested device credentials and configuration, and in several cases issued commands to clear command history and logs to frustrate forensics. We rate it critical. Notably, the emphasis we would add to the patch guidance is anti-forensics: because exploitation grants root and the same access can wipe evidence, absence of logs is not evidence of absence. Defenders should compare against known-good configuration and assume credential compromise on exposed units.",
+  "mentions_cves": ["CVE-2022-1388"]
+}

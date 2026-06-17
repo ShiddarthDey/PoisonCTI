@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-vcenter22005-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/vcenter-22005-analytics-rce",
+  "date": "2021-09-23",
+  "title": "vCenter Analytics Service File Upload to RCE (CVE-2021-22005)",
+  "text": "CVE-2021-22005 is an arbitrary file upload vulnerability in the Analytics (CEIP) service of vCenter Server. An unauthenticated attacker who can reach port 443 can upload a specially crafted file and execute code on the appliance, regardless of configuration. We assess it as critical (CVSS 9.8). After the advisory, we observed rapid scanning and exploitation; operators uploaded JSP web shells and ran commands as root on the vCenter appliance. Given vCenter's control over the virtual estate, this is a top-priority patch. Inspect for web shells under the analytics upload paths and review vCenter service logs for anomalous child processes if the appliance was exposed before patching.",
+  "mentions_cves": ["CVE-2021-22005"]
+}

@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-printnightmare-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2021/07/printnightmare-spooler",
+  "date": "2021-07-02",
+  "title": "Windows Print Spooler Remote Code Execution (CVE-2021-34527)",
+  "text": "CVE-2021-34527, PrintNightmare, is a vulnerability in the Windows Print Spooler service. By abusing RpcAddPrinterDriverEx, an authenticated attacker can load a malicious driver and execute code as SYSTEM, enabling both privilege escalation and, where the spooler is reachable, remote code execution. The CVSS base score is 8.8 (High). Because exploitation yields SYSTEM on the host and the spooler runs on domain controllers by default, the practical impact in a domain can be severe escalation and lateral movement. CISA recommends applying updates and, where printing is not required, disabling the Print Spooler service, especially on domain controllers and Tier 0 assets.",
+  "mentions_cves": ["CVE-2021-34527"]
+}

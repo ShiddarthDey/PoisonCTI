@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-citrix-vendor",
+  "source": "vendor_blog",
+  "url": "https://example-vendor.test/blog/citrix-netscaler-webshells",
+  "date": "2020-01-20",
+  "title": "Post-Exploitation Tradecraft on Vulnerable Citrix Appliances",
+  "text": "Across our Citrix ADC investigations, the interesting story is persistence and evasion, not just the initial traversal. After exploiting CVE-2019-19781, actors planted web shells and in several cases the NOTROBIN implant, which both backdoored the device and removed other actors' shells to monopolize access. Operators then ran reconnaissance commands and staged credential theft to pivot inward. We rate this critical, with the caveat that impact depends on what the gateway fronts. Defenders fixating only on patching missed implants that survived the update; the priority should be forensic review of the appliance for code execution artifacts and unauthorized scheduled tasks or cron entries.",
+  "mentions_cves": ["CVE-2019-19781"]
+}

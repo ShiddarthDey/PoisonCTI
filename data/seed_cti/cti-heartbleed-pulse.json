@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-heartbleed-pulse",
+  "source": "otx_pulse",
+  "url": "https://otx.example.test/pulse/heartbleed",
+  "date": "2014-04-11",
+  "title": "Heartbleed Scanning and Credential Harvesting Pulse",
+  "text": "Active scanning for CVE-2014-0160 (Heartbleed) observed across TLS services on port 443 and other SSL-enabled ports. Adversaries exploit the OpenSSL heartbeat over-read to dump server memory and harvest credentials, session tokens, and private key material without authentication. Indicators include bursts of malformed heartbeat requests and abnormal TLS handshakes. Because the leak exposes secrets used for authentication, follow-on activity frequently involves credential reuse and account access rather than direct code execution. Recommended actions: patch OpenSSL, reissue certificates, and force credential rotation for any service that was exposed.",
+  "mentions_cves": ["CVE-2014-0160"]
+}

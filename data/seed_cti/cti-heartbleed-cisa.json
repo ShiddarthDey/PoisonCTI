@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-heartbleed-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/heartbleed-openssl",
+  "date": "2014-04-08",
+  "title": "OpenSSL TLS Heartbeat Information Disclosure (Heartbleed)",
+  "text": "The TLS and DTLS heartbeat extension (RFC 6520) lets one peer send a small payload that the other echoes back. In OpenSSL 1.0.1 through 1.0.1f the code trusts an attacker-supplied length field without checking it against the payload actually sent, so a request that claims 64KB while supplying a single byte makes the server copy up to 64KB of adjacent process memory into its reply. Those reads have returned TLS private keys, session cookies, and login credentials, and the requester never has to authenticate or finish a handshake. Heartbleed discloses secrets rather than running code, but leaked keys permit later decryption of captured traffic and impersonation of the server. Remediation is OpenSSL 1.0.1g, or a rebuild with -DOPENSSL_NO_HEARTBEATS, followed by certificate reissuance and credential resets. NVD scores it 7.5 (High).",
+  "mentions_cves": ["CVE-2014-0160"]
+}

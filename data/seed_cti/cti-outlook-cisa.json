@@ -1,0 +1,9 @@
+{
+  "doc_id": "cti-outlook-cisa",
+  "source": "cisa",
+  "url": "https://www.cisa.gov/news-events/alerts/2023/03/outlook-cve-2023-23397",
+  "date": "2023-03-14",
+  "title": "Microsoft Outlook Elevation of Privilege via NTLM Leak (CVE-2023-23397)",
+  "text": "CVE-2023-23397 is an elevation of privilege vulnerability in Microsoft Outlook for Windows. An attacker sends an email containing an extended MAPI reminder property that points to a UNC path on an attacker-controlled server. When Outlook processes the reminder, it automatically authenticates to that path, leaking the victim's Net-NTLMv2 hash with no user interaction and before the email is even opened. This is forced authentication; the leaked hash can be relayed or cracked. The CVSS base score is 9.8 (Critical). Apply the update, block outbound SMB (TCP 445) to the internet, and consider adding high-value users to the Protected Users group to prevent NTLM authentication.",
+  "mentions_cves": ["CVE-2023-23397"]
+}
