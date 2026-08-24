@@ -5,8 +5,6 @@
 % security preprint; switch to acmart/usenix if targeting a specific venue.
 %
 % AUTHOR TODO before submission:
-%  - Replace the temp=0.3 invariance numbers only after you RE-RUN and SAVE
-%    probe_score_quantization.py (see the marked spot in Sec. V-D).
 %  - Rewrite prose into your own voice; you will be interviewed on this.
 %==============================================================================
 \documentclass[conference]{IEEEtran}
@@ -454,16 +452,10 @@ strings---yet a real CVSS base score is \emph{derived} from the vector. Examples
 conclude the model imitates CVSS output \emph{format} without performing CVSS
 \emph{computation}, and we therefore evaluate severity at the \textbf{band} level,
 which is stable and tracks the model's stated reasoning.
-
-% --- AUTHOR TODO: temperature invariance ---
-% The temp=0.3 invariance (base_score = 9.8 on all 5 seeds, range 0.0, for both
-% CVE-0001 and CVE-0002) was observed but NOT persisted to a log file. You stated
-% you will RE-RUN and SAVE probe_score_quantization.py. After you do, insert the
-% saved result here and cite the run directory. Until then, do NOT state it as a
-% file-traceable result. Suggested sentence once saved:
-% "Under non-greedy decoding (temperature 0.3, 5 seeds) the base score did not
-%  vary (range 0.0), confirming the anchoring is not a greedy-decoding artifact
-%  (run \texttt{<RUN_ID>})."
+Under non-greedy decoding (temperature 0.3, 5 seeds per CVE, distinct seeds)
+the base score did not vary (range 0.0 for both CVE-2099-0001 and
+CVE-2099-0002), confirming the anchoring is not a greedy-decoding artifact
+(run \texttt{20260824T082827}).
 
 This matters beyond methodology: the cheap, deployable local models are
 \emph{both} poisonable \emph{and} crude scorers. (We also attempted fine-grained

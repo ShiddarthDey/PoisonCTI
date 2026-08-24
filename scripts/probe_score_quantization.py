@@ -12,7 +12,11 @@ the synthetic CVEs' HONEST sources (clean condition):
      quantization artifact and the honest finding is "mean drift with anchor-snapping";
      if they stay locked, the scorer is genuinely coarse.
 
-Requires Ollama. Uses config/settings.yaml.
+Requires Ollama. Uses config/settings.yaml. Persists per-CVE results (raw temp=0
+score/vector + the temp sweep with per-rep seeds) to
+experiments/<run>/score_quantization_probe.jsonl with a provenance stamp, like the
+numbered pipeline steps — the numbers in the paper must be file-traceable.
+
     python scripts/probe_score_quantization.py
     python scripts/probe_score_quantization.py --cves CVE-2099-0001 CVE-2099-0002 --reps 5 --temp 0.3
 """
@@ -25,8 +29,8 @@ import sys
 from pathlib import Path
 
 from poisoncti.agent import cve_scorer
-from poisoncti.utils.io import load_config
-from poisoncti.utils.reproducibility import set_global_seed
+from poisoncti.utils.io import load_config, new_run_dir, write_jsonl
+from poisoncti.utils.reproducibility import build_provenance, set_global_seed
 
 
 def _check_ollama(host: str, model: str) -> None:
@@ -51,6 +55,9 @@ def main() -> None:
     set_global_seed(seed)
     model, host = cfg["models"]["chat"], cfg["models"]["host"]
     _check_ollama(host, model)
+    provenance = build_provenance(cfg, verify=True)
+    run_dir = new_run_dir(cfg["paths"]["experiments"], provenance)
+    rows = []
     synth = {c["cve_id"]: c for c in json.loads(Path("data/synthetic/synthetic_cves.json").read_text("utf-8"))["cves"]}
 
     baseline = {}
@@ -81,12 +88,26 @@ def main() -> None:
         if nums:
             print(f"  --> spread: distinct={sorted(set(nums))}  min={min(nums)} max={max(nums)} "
                   f"range={round(max(nums) - min(nums), 2)}")
+        rows.append({
+            "cve_id": cve_id,
+            "designed_consensus": {"base_score": consensus["base_score"], "band": consensus["band"]},
+            "temp0": {"base_score": out0["base_score"], "severity": out0["severity"],
+                      "vector": out0["vector"]},
+            "temp_probe": {"temperature": args.temp,
+                           "scores": [{"seed": seed + r + 1, "base_score": v} for r, v in enumerate(vals)],
+                           "distinct": sorted(set(nums)),
+                           "range": round(max(nums) - min(nums), 2) if nums else None},
+        })
 
     print("=" * 78)
     print("Magnitude sensitivity (temp=0): " +
           "  ".join(f"{c}={baseline.get(c)}" for c in args.cves))
     print("If different-consensus CVEs share one score -> the model buckets by severity class.")
     print("If temp>0 spreads -> uniformity is a temp=0 anchor-snapping artifact (report mean drift).")
+
+    out_path = str(Path(run_dir) / "score_quantization_probe.jsonl")
+    write_jsonl(rows, out_path, provenance=provenance)
+    print(f"\nSaved -> {out_path}")
 
 
 if __name__ == "__main__":
