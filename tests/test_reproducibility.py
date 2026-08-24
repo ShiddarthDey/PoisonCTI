@@ -34,8 +34,8 @@ def test_build_provenance_has_required_fields(cfg, tmp_path, monkeypatch):
     lock = {
         "ollama_version": "0.1.0",
         "models": {
-            "chat": {"tag": "llama3:8b", "digest": "sha256:abc"},
-            "embed": {"tag": "bge-m3", "digest": "sha256:def"},
+            "chat": {"llama3:8b": {"digest": "sha256:abc"}},
+            "embed": {"bge-m3": {"digest": "sha256:def"}},
         },
     }
     lock_path = tmp_path / "models.lock.json"
@@ -45,9 +45,45 @@ def test_build_provenance_has_required_fields(cfg, tmp_path, monkeypatch):
     prov = repro.build_provenance(cfg, verify=False)
     assert prov["seed"] == 1337
     assert prov["temperature"] == 0.0
-    assert prov["models"]["chat"]["digest"] == "sha256:abc"
-    assert prov["models"]["embed"]["digest"] == "sha256:def"
+    assert prov["models"]["chat"] == {"tag": "llama3:8b", "digest": "sha256:abc"}
+    assert prov["models"]["embed"] == {"tag": "bge-m3", "digest": "sha256:def"}
     assert "timestamp_utc" in prov and "poisoncti_version" in prov
+
+
+def test_verify_model_pins_multi_tag(cfg, tmp_path, monkeypatch):
+    """The lock is keyed by tag: several chat pins coexist; the CONFIGURED tag
+    is the one verified — matching digest passes, drift or unpinned aborts."""
+    lock = {
+        "models": {
+            "chat": {"llama3:8b": {"digest": "sha256:aaa"},
+                     "mistral:7b": {"digest": "sha256:bbb"}},
+            "embed": {"bge-m3": {"digest": "sha256:def"}},
+        },
+    }
+    lock_path = tmp_path / "models.lock.json"
+    lock_path.write_text(json.dumps(lock), encoding="utf-8")
+
+    def fake_resolve(c):
+        return {"chat": {"tag": c["models"]["chat"], "digest": "sha256:bbb"},
+                "embed": {"tag": "bge-m3", "digest": "sha256:def"}}
+
+    monkeypatch.setattr(repro, "resolve_model_digests", fake_resolve)
+    cfg["models"]["chat"] = "mistral:7b"
+    repro.verify_model_pins(cfg, str(lock_path))  # pinned tag, matching digest: OK
+
+    # drift on the configured tag aborts
+    drifted = json.loads(lock_path.read_text(encoding="utf-8"))
+    drifted["models"]["chat"]["mistral:7b"]["digest"] = "sha256:STALE"
+    lock_path.write_text(json.dumps(drifted), encoding="utf-8")
+    with pytest.raises(RuntimeError, match="digest drift"):
+        repro.verify_model_pins(cfg, str(lock_path))
+
+    # an unpinned configured tag aborts
+    unpinned = json.loads(lock_path.read_text(encoding="utf-8"))
+    del unpinned["models"]["chat"]["mistral:7b"]
+    lock_path.write_text(json.dumps(unpinned), encoding="utf-8")
+    with pytest.raises(RuntimeError, match="no pin"):
+        repro.verify_model_pins(cfg, str(lock_path))
 
 
 def test_digest_lookup_and_match(monkeypatch):

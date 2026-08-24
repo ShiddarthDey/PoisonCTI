@@ -6,9 +6,10 @@ per-CVE summary (retrieved sources, predicted techniques, predicted vs gold
 severity) and writes the raw results to experiments/<run>/baseline.jsonl with a
 provenance stamp.
 
-Requires a running Ollama server with the chat + embed models pulled and pinned:
-    ollama pull llama3:8b && ollama pull bge-m3
-    python scripts/00_pin_models.py
+Requires a running Ollama server with the chat + embed models pulled and pinned
+(whatever tags config/settings.yaml selects), e.g.:
+    ollama pull <chat-tag> && ollama pull bge-m3
+    python scripts/00_pin_models.py            # or: --add <chat-tag> to extend the lock
 
 Usage:
     python scripts/03_run_baseline.py --test        # 2-CVE smoke (settings.test.yaml)

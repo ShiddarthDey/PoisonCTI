@@ -121,22 +121,31 @@ def load_lock(path: str = MODELS_LOCK_PATH) -> dict:
 def verify_model_pins(cfg: dict, lock_path: str = MODELS_LOCK_PATH) -> None:
     """Raise RuntimeError if live model digests differ from the committed lock.
 
-    This is the guard that makes results trustworthy: if the local model has been
-    re-pulled/updated, its digest will not match the lock and the run is aborted
-    rather than silently producing different numbers.
+    The lock maps tag -> pin per role, so several chat models can be pinned side
+    by side (multi-model replication). Only the CONFIGURED tags are verified, and
+    each must already be pinned. If the local model has been re-pulled/updated,
+    its digest will not match the lock and the run is aborted rather than
+    silently producing different numbers.
     """
     lock = load_lock(lock_path)
     live = resolve_model_digests(cfg)
     for role in ("chat", "embed"):
-        locked = lock["models"][role]["digest"]
+        tag = live[role]["tag"]
+        entry = lock.get("models", {}).get(role, {}).get(tag)
+        if entry is None:
+            raise RuntimeError(
+                f"{lock_path} has no pin for '{role}' model '{tag}'. "
+                f"Run `python scripts/00_pin_models.py --add {tag} --role {role}` to pin it."
+            )
+        locked = entry.get("digest")
         if locked is None:
             raise RuntimeError(
-                f"{lock_path} has no digest for '{role}'. "
-                f"Run `python scripts/00_pin_models.py` to pin it."
+                f"{lock_path} has a null digest for '{role}' model '{tag}'. "
+                f"Re-run `python scripts/00_pin_models.py --add {tag} --role {role}` to pin it."
             )
         if live[role]["digest"] != locked:
             raise RuntimeError(
-                f"Model digest drift for '{role}' ({live[role]['tag']}): "
+                f"Model digest drift for '{role}' ({tag}): "
                 f"lock={locked} live={live[role]['digest']}. "
                 f"Re-pin intentionally or restore the pinned model."
             )
@@ -146,13 +155,15 @@ def build_provenance(cfg: dict, verify: bool = False) -> dict:
     """Assemble the metadata block stamped into every results file.
 
     With verify=False the digests come from the committed lock (no server needed);
-    with verify=True they are re-resolved live and checked against the lock.
+    with verify=True they are re-resolved live and checked against the lock. The
+    lock is keyed by tag, so the configured models' pins are looked up by name.
     """
     from poisoncti import __version__
 
     if verify:
         verify_model_pins(cfg, MODELS_LOCK_PATH)
     lock = load_lock(MODELS_LOCK_PATH)
+    chat_tag, embed_tag = cfg["models"]["chat"], cfg["models"]["embed"]
     return {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "seed": int(cfg["seed"]),
@@ -160,7 +171,7 @@ def build_provenance(cfg: dict, verify: bool = False) -> dict:
         "poisoncti_version": __version__,
         "ollama_version": lock.get("ollama_version"),
         "models": {
-            "chat": {"tag": lock["models"]["chat"]["tag"], "digest": lock["models"]["chat"]["digest"]},
-            "embed": {"tag": lock["models"]["embed"]["tag"], "digest": lock["models"]["embed"]["digest"]},
+            "chat": {"tag": chat_tag, "digest": lock["models"]["chat"][chat_tag]["digest"]},
+            "embed": {"tag": embed_tag, "digest": lock["models"]["embed"][embed_tag]["digest"]},
         },
     }

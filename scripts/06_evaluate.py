@@ -148,13 +148,14 @@ The same property governs both halves of the study: **independent honest corrobo
 So more independent honest sources do double duty: they blunt the poison and make it detectable.
 """
 
-LIMITATIONS = """## 5. Limitations
+def limitations_section(chat_tag: str) -> str:
+    return f"""## 5. Limitations
 
 - **Scale: n = 8 synthetic CVEs.** This is a controlled *mechanism demonstration*, not a
   benchmark. The numbers (8/8 detection, 1.00 recovery, 0.00 FP) characterise the mechanism on
   a small, deliberately-constructed set; they are not population estimates.
 - **Instrument findings as scope, not as headline accuracy claims:**
-  - The local model (llama3:8b) **imitates CVSS output format without computing it** — it emits
+  - The local model ({chat_tag}) **imitates CVSS output format without computing it** — it emits
     canonical base scores (9.8/7.5/4.3) with malformed/hallucinated vectors and cannot resolve
     magnitude. We therefore measure severity at the **band level** only.
   - Fine-grained **ATT&CK mapping is unreliable** with this model (≈75% ID/concept mismatch; an
@@ -183,13 +184,15 @@ def main() -> None:
                          "Run scripts/04 and 05 first, or pass --m4/--m5.")
 
     m4_rows, m4_md = m4_section(args.m4, args.m4_prior)
+    chat_tag = _provenance(args.m4).get("models", {}).get("chat", {}).get("tag", "?")
     header = ("# PoisonCTI — Results\n\n"
               "How reliably can a single poisoned open-source CTI source steer an LLM threat-intel\n"
               "agent's CVE severity scoring, and can a lightweight cross-source consistency check\n"
               "restore reliability without retraining? Results below are computed by\n"
               "`scripts/06_evaluate.py` from the saved experiment jsonl (no model calls); every table\n"
               "cites its run directory + provenance.\n")
-    doc = "\n".join([header, m4_md, m5_section(args.m5), COUPLING, examples_section(m4_rows), LIMITATIONS])
+    doc = "\n".join([header, m4_md, m5_section(args.m5), COUPLING, examples_section(m4_rows),
+                     limitations_section(chat_tag)])
     Path(args.out).write_text(doc, encoding="utf-8")
     print(f"Wrote {args.out} from:\n  M4: {args.m4}\n  M5: {args.m5}"
           + (f"\n  M4-prior: {args.m4_prior}" if args.m4_prior else ""))
