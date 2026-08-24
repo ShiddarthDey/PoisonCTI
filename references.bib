@@ -1,0 +1,112 @@
+% references.bib — PoisonCTI
+
+% ---------------------------------------------------------------------------
+% Closest related work: LLM-assisted CTI failure study (arXiv:2509.23573).
+% ---------------------------------------------------------------------------
+@article{meng2025uncovering,
+  title        = {Uncovering Vulnerabilities of {LLM}-Assisted Cyber Threat Intelligence},
+  author       = {Meng, Yuqiao and Tang, Luoxi and Yu, Feiyang and Jia, Jinyuan and Yan, Guanhua and Yang, Ping and Xi, Zhaohan},
+  journal      = {arXiv preprint arXiv:2509.23573},
+  year         = {2025},
+  note         = {Version 3, February 2026},
+  url          = {https://arxiv.org/abs/2509.23573}
+}
+
+% ---------------------------------------------------------------------------
+% The canonical RAG knowledge-poisoning attack (USENIX Security 2025).
+% ---------------------------------------------------------------------------
+@inproceedings{zou2025poisonedrag,
+  title        = {{PoisonedRAG}: Knowledge Corruption Attacks to Retrieval-Augmented Generation of Large Language Models},
+  author       = {Zou, Wei and Geng, Runpeng and Wang, Binghui and Jia, Jinyuan},
+  booktitle    = {34th USENIX Security Symposium (USENIX Security 25)},
+  pages        = {3827--3844},
+  year         = {2025},
+  publisher    = {USENIX Association},
+  address      = {Seattle, WA, USA},
+  isbn         = {978-1-939133-52-6},
+  url          = {https://www.usenix.org/conference/usenixsecurity25/presentation/zou-poisonedrag}
+}
+
+% ---------------------------------------------------------------------------
+% CTIBench — CTI benchmark for LLMs; includes a CVSS severity-prediction task
+% and evaluates Llama3-8B (the model used here). NeurIPS 2024 D&B Track.
+% ---------------------------------------------------------------------------
+@inproceedings{alam2024ctibench,
+  title        = {{CTIBench}: A Benchmark for Evaluating {LLMs} in Cyber Threat Intelligence},
+  author       = {Alam, Md Tanvirul and Bhusal, Dipkamal and Nguyen, Le and Rastogi, Nidhi},
+  booktitle    = {Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track},
+  year         = {2024},
+  url          = {https://arxiv.org/abs/2406.07599}
+}
+
+% ---------------------------------------------------------------------------
+% [4] Shafee et al. — adversarial attacks across the text-CTI pipeline.
+% ---------------------------------------------------------------------------
+@article{falsealarms2025,
+  title        = {False Alarms, Real Damage: Adversarial Attacks Using {LLM}-based Models on Text-based Cyber Threat Intelligence Systems},
+  author       = {Shafee, S. and others},
+  journal      = {arXiv preprint arXiv:2507.06252},
+  year         = {2025},
+  url          = {https://arxiv.org/abs/2507.06252}
+}
+
+% ---------------------------------------------------------------------------
+% [6] Jafarikhah et al. — LLM CVSS scoring; corroborates the crude-scorer finding.
+% ---------------------------------------------------------------------------
+@article{descriptiontoscore2025,
+  title        = {From Description to Score: Can {LLMs} Quantify Vulnerabilities?},
+  author       = {Jafarikhah, S. and Thompson, D. and Deans, E. and Siadati, H. and Liu, Y.},
+  journal      = {arXiv preprint arXiv:2512.06781},
+  year         = {2025},
+  url          = {https://arxiv.org/abs/2512.06781}
+}
+
+% ---------------------------------------------------------------------------
+% [2] Zhong et al. — adversarial passage injection into retrieval corpora.
+% ---------------------------------------------------------------------------
+@inproceedings{zhong2023poisoning,
+  title        = {Poisoning Retrieval Corpora by Injecting Adversarial Passages},
+  author       = {Zhong, Zexuan and Huang, Ziqing and Wettig, Alexander and Chen, Danqi},
+  booktitle    = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages        = {13764--13775},
+  address      = {Singapore},
+  year         = {2023}
+}
+
+% ---------------------------------------------------------------------------
+% [3] Ranade et al. — fake-CTI generation with transformer models.
+% ---------------------------------------------------------------------------
+@inproceedings{ranade2021generating,
+  title        = {Generating Fake Cyber Threat Intelligence Using Transformer-Based Models},
+  author       = {Ranade, Priyanka and Piplai, Aritran and Mittal, Sudip and Joshi, Anupam and Finin, Tim},
+  booktitle    = {International Joint Conference on Neural Networks (IJCNN)},
+  year         = {2021}
+}
+
+% ---------------------------------------------------------------------------
+% OWASP Top 10 for LLM Applications.
+% ---------------------------------------------------------------------------
+@misc{owasp_llm_top10,
+  title        = {{OWASP} Top 10 for Large Language Model Applications},
+  author       = {{OWASP Foundation}},
+  year         = {2025},
+  howpublished = {\url{https://owasp.org/www-project-top-10-for-large-language-model-applications/}}
+}
+
+% ---------------------------------------------------------------------------
+% Tool / model references.
+% ---------------------------------------------------------------------------
+@misc{llama3,
+  title        = {The {Llama} 3 Herd of Models},
+  author       = {{Meta AI}},
+  year         = {2024},
+  howpublished = {\url{https://ai.meta.com/llama/}},
+  note         = {Model tag llama3:8b, Q4\_0 quantization, via Ollama}
+}
+
+@misc{bgem3,
+  title        = {{BGE-M3}: Multi-Lingual, Multi-Functionality, Multi-Granularity Text Embeddings},
+  author       = {Chen, Jianlv and Xiao, Shitao and Zhang, Peitian and Luo, Kun and Lian, Defu and Liu, Zheng},
+  year         = {2024},
+  howpublished = {\url{https://arxiv.org/abs/2402.03216}}
+}
