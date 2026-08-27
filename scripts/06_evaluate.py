@@ -148,12 +148,30 @@ The same property governs both halves of the study: **independent honest corrobo
 So more independent honest sources do double duty: they blunt the poison and make it detectable.
 """
 
-def limitations_section(chat_tag: str) -> str:
+def limitations_section(chat_tag: str, m4_rows: list[dict]) -> str:
+    mismatches = [
+        f"{r['cve_id']} ({r['direction']}: consensus {r['consensus']['band']}, "
+        f"clean {r['clean_band']})"
+        for r in m4_rows
+        if r.get("consensus", {}).get("band") and r.get("clean_band")
+        and r["clean_band"] != r["consensus"]["band"]
+    ]
+    calibration_note = (
+        "Clean band differs from the designed consensus on: " + "; ".join(mismatches) + "."
+        if mismatches else
+        f"Clean band equals the designed consensus on all {len(m4_rows)} CVEs."
+    )
     return f"""## 5. Limitations
 
 - **Scale: n = 8 synthetic CVEs.** This is a controlled *mechanism demonstration*, not a
   benchmark. The numbers (8/8 detection, 1.00 recovery, 0.00 FP) characterise the mechanism on
   a small, deliberately-constructed set; they are not population estimates.
+- **Calibration vs steering.** Two distinct quantities appear in this report: *calibration*
+  (the model's clean band vs the designed consensus band) and *steering* (the band shift vs
+  the model's OWN clean baseline). Attack success and defense recovery are measured against
+  the model's own clean band, so a model whose clean band already sits at or below the
+  consensus band leaves less room for a deflation shift to register — a floor effect that
+  must not be misread as robustness. {calibration_note}
 - **Instrument findings as scope, not as headline accuracy claims:**
   - The local model ({chat_tag}) **imitates CVSS output format without computing it** — it emits
     canonical base scores (9.8/7.5/4.3) with malformed/hallucinated vectors and cannot resolve
@@ -192,7 +210,7 @@ def main() -> None:
               "`scripts/06_evaluate.py` from the saved experiment jsonl (no model calls); every table\n"
               "cites its run directory + provenance.\n")
     doc = "\n".join([header, m4_md, m5_section(args.m5), COUPLING, examples_section(m4_rows),
-                     limitations_section(chat_tag)])
+                     limitations_section(chat_tag, m4_rows)])
     Path(args.out).write_text(doc, encoding="utf-8")
     print(f"Wrote {args.out} from:\n  M4: {args.m4}\n  M5: {args.m5}"
           + (f"\n  M4-prior: {args.m4_prior}" if args.m4_prior else ""))
