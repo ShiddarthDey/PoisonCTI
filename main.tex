@@ -465,7 +465,7 @@ CVSS \emph{vectors} were frequently malformed---fields run together, CWE codes
 inserted where CVSS metrics belong, and CVSS~v2 syntax mixed into v3.1
 strings---yet a real CVSS base score is \emph{derived} from the vector. Examples
 (verbatim): \texttt{CVSS:3.1/AV:NAC:CWE:78}, \texttt{CVSS:3.1/AV:NAC:CWE:22},
-\texttt{CVSS:3.1/AV:N/AC:L/Au:N/C:C/I:C/A:H} (the \texttt{Au:N} field is v2). We
+\path{CVSS:3.1/AV:N/AC:L/Au:N/C:C/I:C/A:H} (the \texttt{Au:N} field is v2). We
 conclude the model imitates CVSS output \emph{format} without performing CVSS
 \emph{computation}, and we therefore evaluate severity at the \textbf{band} level,
 which is stable and tracks the model's stated reasoning.
