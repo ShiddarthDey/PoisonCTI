@@ -1,87 +1,69 @@
 # PoisonCTI
 
-**Research question.** How reliably can a *single poisoned* open-source
-intelligence source steer an LLM threat-intelligence agent's MITRE ATT&CK mapping
-and CVE severity scoring — and can a *lightweight cross-source consistency check*
-restore reliability **without retraining**?
+**Single-source RAG poisoning of LLM-based CVE severity assessment, and a consistency-based defense.**
 
-This repo measures the attack and tests the defense, fully **local and free**
-(Ollama + public data: MITRE ATT&CK STIX, NVD API, public CTI text).
+PoisonCTI studies whether a *single* poisoned document inside a retrieval-augmented generation (RAG) corpus can steer an LLM's CVSS-style severity verdict for a target CVE — and whether a leave-one-out consistency check can detect and recover from such manipulation without any trusted data.
 
-## The experiment in one picture
+## Key findings
+
+Three open-weight models, 8 attack scenarios each (4 deflate, 4 inflate), temperature 0:
+
+| Model | Attack success | Defense detection | Severity recovery | False positives |
+|---|---|---|---|---|
+| Llama 3 8B | 8/8 | 8/8 | 8/8 (1.00) | 0/8 |
+| Qwen 2.5 7B | 7/8 | 7/8 | 7/8 (0.88) | 0/8 |
+| Mistral 7B | 4/8 | 7/8 | 8/8 (1.00) | 0/8 |
+
+- Attack susceptibility is **model-dependent** (8/8 vs 4/8 across models on identical inputs).
+- The leave-one-out defense **generalizes across models**: ≥7/8 detection and **zero false positives** on clean runs everywhere.
+- The attack/defense asymmetry (inflation vs deflation shifts) is model-specific, not universal — see the paper, §V.
+
+## Repository layout
 
 ```
-ingestion ── corpus(RAG) ──▶ agent ──▶ { ATT&CK techniques, CVE severity }
-                  ▲                              │
-       poison ────┘  (inject ONE source)         ▼
-       defense ──────────────────────────▶ evaluation
-       (cross-source consistency check)    (drift from gold + attack-success-rate)
+config/
+  models.lock.json      # Pinned model digests (reproducibility lock)
+scripts/
+  00_pin_models.py      # Record exact Ollama model digests before running
+  01–03                 # Corpus & attack scenario construction
+  04_*.py               # Attack runs (poisoned RAG severity assessment)
+  05_run_defense.py     # Leave-one-out consistency defense evaluation
+  06_evaluate.py        # Metrics, tables, and narrative generation (data-driven)
+RESULTS.md              # Llama 3 8B results
+RESULTS_qwen2.5-7b.md   # Qwen 2.5 7B results
+RESULTS_mistral-7b.md   # Mistral 7B results
+main.tex                # Paper source (IEEE format)
+references.bib
 ```
 
-Three conditions, same items: **clean → poisoned → poisoned+defended**.
-We report two complementary measures:
-1. **Drift from gold** — mapping-flip rate and severity drift vs. NVD CVSS and a
-   curated CVE→technique gold set (ambiguous gold is flagged and excluded).
-2. **Attack-success-rate (ASR)** — how often output moves toward the attacker's
-   *target* label, independent of perfect gold.
+## Reproducing
 
-## Reproducibility
+Requires [Ollama](https://ollama.com) and Python 3.10+.
 
-Everything that can change a number is pinned, and every results file records how
-it was produced.
+1. Pull and pin the exact models used:
+   ```bash
+   ollama pull llama3:8b && ollama pull qwen2.5:7b && ollama pull mistral:7b
+   python scripts/00_pin_models.py --add <model>
+   ```
+   `config/models.lock.json` records the digest of every model; runs verify against it so results cannot silently drift across model updates.
+2. Run the pipeline stages in order (`04` attack → `05` defense → `06` evaluation). Stage 05 rebuilds its inputs from the attack run; stage 06 regenerates all tables and the results narrative from stored outputs.
+3. Per-run artifacts (prompts, raw model outputs, verdicts) are stored under timestamped `run_*` directories and are the source of every number in the paper.
 
-- **Python deps:** `requirements.txt` (pinned `==`) + `requirements.lock` (full freeze).
-- **Models:** pinned by exact Ollama **digest**, not a floating tag. `config/settings.yaml`
-  holds the chosen tag; `config/models.lock.json` holds the machine-resolved digest
-  (written by `python scripts/00_pin_models.py`). Every run verifies the live model
-  against the lock and **aborts on digest drift**.
-- **Determinism:** all agent calls use greedy decoding (`temperature=0`) plus the
-  global `seed` (config), which seeds Python/NumPy RNG and the Ollama decode `seed`.
-- **Provenance:** every results file carries a `_provenance` block — model tags +
-  digests, seed, timestamp, package + Ollama version.
-- **One command:** `python run_all.py` (or `make reproduce`) regenerates every
-  result/figure from scratch, in order, stopping at the first failure.
+## Paper
 
-> Caveat: `temperature=0` + fixed seed is deterministic **on a given machine /
-> Ollama build**, not bit-identical across different hardware or Ollama versions —
-> hence we also record the Ollama version in the lock and provenance.
+`main.tex` compiles with pdfLaTeX (IEEEtran). All tables are generated from run artifacts; see `06_evaluate.py`.
 
-### Pinned models
+## Citation
 
-Fill this in from `python scripts/00_pin_models.py` output:
+```bibtex
+@misc{poisoncti2026,
+  author = {Tusar, Shiddarth Dey},
+  title  = {PoisonCTI: Single-Source RAG Poisoning of LLM-Based CVE Severity Assessment},
+  year   = {2026},
+  howpublished = {\url{https://github.com/ShiddarthDey/PoisonCTI}}
+}
+```
 
-| role  | tag                | digest        | size | quant |
-|-------|--------------------|---------------|------|-------|
-| chat  | `llama3:8b`        | _(run pin)_   |      |       |
-| embed | `bge-m3`           | _(run pin)_   |      |       |
+## Contact
 
-## Status
-
-✅ Study complete (severity axis). Findings in [RESULTS.md](RESULTS.md), generated by
-`scripts/06_evaluate.py` from the saved experiment jsonl (no model calls; every number
-cites its run id). Headline on the 8 synthetic CVEs: a single poisoned source shifts the
-agent's CVSS severity **band** in its intended direction 8/8 (deflate 1 band; inflate 1–2,
-diluted to mean 1.5 by a 3rd honest source); the leave-one-out internal-consistency defense
-restores the correct band 8/8 with 0 false positives. Decision log: [DECISIONS.md](DECISIONS.md).
-
-> Note: ATT&CK mapping was found unreliable with a small local model and is reported only as a
-> secondary perturbation signal; the study is severity-focused. See RESULTS.md §5 (Limitations).
-
-## Quick start
-
-See [SETUP.md](SETUP.md). TL;DR: install Ollama, `pip install -r requirements.txt`,
-then run `scripts/01…06` in order.
-
-## Layout
-
-- `src/poisoncti/ingestion` — sources → normalized records
-- `src/poisoncti/corpus` — normalized docs → retrievable vector index (RAG)
-- `src/poisoncti/agent` — the threat-intel agent under study (LLM, retriever, mapper, scorer)
-- `src/poisoncti/poison` — the single-source poisoning attack
-- `src/poisoncti/defense` — the cross-source consistency check
-- `src/poisoncti/evaluation` — gold labels, metrics, experiment runner
-- `scripts/` — ordered, reproducible entry points
-- `data/` — `gold/` and `poison/` are committed artifacts; the rest is re-buildable
-
-Threat model: [THREAT_MODEL.md](THREAT_MODEL.md).
-# PoisonCTI
+Shiddarth Dey Tusar — Charles Sturt University, NSW, Australia — tusardey77@gmail.com
