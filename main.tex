@@ -289,7 +289,7 @@ success 4/4, mean $|$band shift$|=1.5$.
 \begin{table}[t]
 \centering
 \caption{Attack with three honest sources on Llama 3 8B. Band shift is signed in the attacker's
-direction. Run \path{run_20260616T132519_943745+0000}.}
+direction. Run \texttt{run\_20260616T132519\_943745+0000}.}
 \label{tab:attack}
 \small
 \begin{tabular}{@{}llccc@{}}
@@ -327,7 +327,7 @@ therefore \emph{partially resists} single-source poisoning.
 \begin{table}[t]
 \centering
 \caption{Corroboration dilution on Llama 3 8B. Mean $|$band shift$|$ by direction. The 2-source
-run (\path{run_20260616T033459_717474+0000}) predates the band-shift field; shifts recomputed
+run (\texttt{run\_20260616T033459\_717474+0000}) predates the band-shift field; shifts recomputed
 from saved scores.}
 \label{tab:dilution}
 \small
@@ -353,9 +353,10 @@ ever flagged on clean input, despite honest sources disagreeing by up to a band.
 \begin{table}[t]
 \centering
 \caption{Defense outcomes on Llama 3 8B (leave-one-out internal-consistency). Run
-\path{run_20260617T090409_203299+0000}. FP = honest source flagged on clean input.}
+\texttt{run\_20260617T090409\_203299+0000}. FP = honest source flagged on clean input.}
 \label{tab:defense}
-\small
+\footnotesize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llcccc@{}}
 \toprule
 CVE & Dir. & Poisoned & Defended & Caught & Recov. \\
@@ -369,7 +370,7 @@ CVE-2099-0006 & deflate & \band{HIGH}     & \band{CRITICAL} & \checkmark & \chec
 CVE-2099-0007 & inflate & \band{CRITICAL} & \band{MEDIUM}   & \checkmark & \checkmark \\
 CVE-2099-0008 & inflate & \band{CRITICAL} & \band{MEDIUM}   & \checkmark & \checkmark \\
 \midrule
-\multicolumn{6}{@{}l}{Detection 8/8 \quad Recovery 8/8 (1.00) \quad FP 0/8 (0.00)} \\
+\multicolumn{6}{@{}l}{Detection 8/8, recovery 8/8 (1.00), FP 0/8 (0.00)} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -440,17 +441,17 @@ and cited run directories.
 
 \begin{table*}[t]
 \centering
-\caption{Cross-model replication summary across three open-weight models ($n=8$ synthetic CVEs per model). Pinned model digests from \texttt{config/models.lock.json}; run directory names cited from experiment logs.}
+\caption{Cross-model replication summary across three open-weight models ($n=8$ synthetic CVEs per model). Pinned model digests from \texttt{config/models.lock.json}; run directory names cited from experiment logs. Run directories abbreviated to timestamp; full names and pinned digests are in the repository (\texttt{config/models.lock.json}).}
 \label{tab:cross-model}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}llllcccc@{}}
+\begin{tabular}{@{}lllcccc@{}}
 \toprule
-Model Tag & Digest (short) & M4 Run Dir. & M5 Run Dir. & Attack (M4) & Detection (M5) & Recovery (M5) & FP (M5) \\
+Model Tag & M4 Run & M5 Run & Attack & Detection & Recovery & FP \\
 \midrule
-\texttt{llama3:8b}   & \texttt{365c0bd3c000a25d28d\dots} & \path{run_20260616T132519_943745+0000} & \path{run_20260617T090409_203299+0000} & 8/8 & 8/8 & 8/8 (1.00) & 0/8 (0.00) \\
-\texttt{qwen2.5:7b}  & \texttt{845dbda0ea48ed749ca\dots} & \path{run_20260828T041137_406624+0000} & \path{run_20260828T042138_087817+0000} & 7/8 & 7/8 & 7/8 (0.88) & 0/8 (0.00) \\
-\texttt{mistral:7b}  & \texttt{6577803aa9a036369e4\dots} & \path{run_20260826T104715_442613+0000} & \path{run_20260826T125402_554702+0000} & 4/8 & 7/8 & 8/8 (1.00) & 0/8 (0.00) \\
+\texttt{llama3:8b}  & \path{run_20260616T132519} & \path{run_20260617T090409} & 8/8 & 8/8 & 8/8 (1.00) & 0/8 (0.00) \\
+\texttt{qwen2.5:7b} & \path{run_20260828T041137} & \path{run_20260828T042138} & 7/8 & 7/8 & 7/8 (0.88) & 0/8 (0.00) \\
+\texttt{mistral:7b} & \path{run_20260826T104715} & \path{run_20260826T125402} & 4/8 & 7/8 & 8/8 (1.00) & 0/8 (0.00) \\
 \bottomrule
 \end{tabular}
 \end{table*}
