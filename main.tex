@@ -4,8 +4,6 @@
 % Requires: IEEEtran.cls (standard). Style chosen as a safe default for a
 % security preprint; switch to acmart/usenix if targeting a specific venue.
 %
-% AUTHOR TODO before submission:
-%  - Rewrite prose into your own voice; you will be interviewed on this.
 %==============================================================================
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
@@ -16,7 +14,9 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{xcolor}
-\usepackage{url}
+\usepackage{xurl}
+\usepackage{microtype}
+\emergencystretch=1.5em
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
 
@@ -603,7 +603,7 @@ adoption.
 \caption{Verbatim rationales (run \texttt{20260616T132519}).}
 \label{tab:rationales}
 \small
-\begin{tabular}{@{}p{0.46\textwidth}@{}}
+\begin{tabular}{@{}p{\linewidth}@{}}
 \toprule
 \textbf{CVE-2099-0001 (deflate), \band{CRITICAL}$\rightarrow$\band{HIGH}} \\
 \emph{Clean:} ``The vulnerability allows an unauthenticated attacker to run
@@ -631,7 +631,7 @@ All experiments run locally and free (Ollama; Llama~3 8B, digest
 pinned by digest; runs record model tag/digest, seed (1337), and timestamp.
 Results regenerate from saved logs with no further model calls. Code and data:
 \url{https://github.com/ShiddarthDey/PoisonCTI} (commit
-\texttt{a87433bf09e381fc8b383baeb79ef6ffce9b30ea}).
+\path{a87433bf09e381fc8b383baeb79ef6ffce9b30ea}).
 
 %==============================================================================
 \bibliographystyle{IEEEtran}
