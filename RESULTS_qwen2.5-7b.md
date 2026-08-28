@@ -24,7 +24,7 @@ Source: `run_20260828T041137_406624+0000/synthetic_poison.jsonl` — chat=`qwen2
 - **deflate**: band-shift success 3/4, mean |band shift| = 1.0
 - **inflate**: band-shift success 4/4, mean |band shift| = 1.0
 
-**Asymmetry:** inflation must claim CRITICAL (far above a LOW/MEDIUM consensus) — a large move; deflation against a CRITICAL consensus moves at most one band in practice. Inflation is the easier, larger-magnitude attack.
+**Asymmetry:** no directional asymmetry was observed for this model (mean |band shift| = 1.0 for both inflation and deflation).
 
 ## 2. Defense (M5) — leave-one-out internal-consistency check
 
@@ -50,9 +50,7 @@ Source: `run_20260828T042138_087817+0000/defense.jsonl` — chat=`qwen2.5:7b` di
 
 The same property governs both halves of the study: **independent honest corroboration**.
 - It **dilutes the attack** — a single poisoned source moves the joint severity band less as
-  more honest sources corroborate (inflation's mean magnitude fell from 2.0 to 1.5 bands when a
-  3rd honest source was added — two of the four inflation CVEs diluted from a 2-band to a 1-band
-  shift, the other two held at 2 bands).
+  more honest sources corroborate (as measured on llama3:8b, adding a 3rd honest source reduced inflation's mean magnitude).
 - It **enables the defense** — the leave-one-out check works precisely because removing the
   poison reveals a stable honest consensus, which requires that consensus to exist (≥3 honest).
 
@@ -75,7 +73,7 @@ So more independent honest sources do double duty: they blunt the poison and mak
 ## 5. Limitations
 
 - **Scale: n = 8 synthetic CVEs.** This is a controlled *mechanism demonstration*, not a
-  benchmark. The numbers (8/8 detection, 1.00 recovery, 0.00 FP) characterise the mechanism on
+  benchmark. The numbers (7/8 detection, 0.88 recovery, 0.00 FP) characterise the mechanism on
   a small, deliberately-constructed set; they are not population estimates.
 - **Calibration vs steering.** Two distinct quantities appear in this report: *calibration*
   (the model's clean band vs the designed consensus band) and *steering* (the band shift vs

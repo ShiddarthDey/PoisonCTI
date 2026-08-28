@@ -81,19 +81,28 @@ def m4_section(m4_path, prior_path):
         lines.append(f"- **{d}**: band-shift success {succ}/{len(rs)}, mean |band shift| "
                      f"= {_mean_abs_shift(rows, d)}")
     # dilution comparison (2-source vs 3-source) if a prior run is supplied
+    prior_rows = None
     if prior_path:
-        prior = read_jsonl(prior_path)
+        prior_rows = read_jsonl(prior_path)
         lines.append(f"\n**Corroboration dilution (2 vs 3 honest sources)** — prior run: {_prov_line(prior_path)}\n")
         lines.append("| direction | mean \\|band shift\\| (prior) | mean \\|band shift\\| (current) |")
         lines.append("|-----------|------------------------------|--------------------------------|")
         for d in ("deflate", "inflate"):
-            lines.append(f"| {d} | {_mean_abs_shift(prior, d)} | {_mean_abs_shift(rows, d)} |")
+            lines.append(f"| {d} | {_mean_abs_shift(prior_rows, d)} | {_mean_abs_shift(rows, d)} |")
         lines.append("\nA 3rd independent honest source reduces the inflation attack's magnitude; "
                      "deflation was already 1 band. **Corroboration partially resists poison.**")
-    lines.append("\n**Asymmetry:** inflation must claim CRITICAL (far above a LOW/MEDIUM consensus) — a "
-                 "large move; deflation against a CRITICAL consensus moves at most one band in practice. "
-                 "Inflation is the easier, larger-magnitude attack.\n")
-    return rows, "\n".join(lines)
+    
+    inf_mean = _mean_abs_shift(rows, "inflate")
+    def_mean = _mean_abs_shift(rows, "deflate")
+    if inf_mean is not None and def_mean is not None and inf_mean > def_mean:
+        asym_text = ("inflation must claim CRITICAL (far above a LOW/MEDIUM consensus) — a "
+                     "large move; deflation against a CRITICAL consensus moves at most one band in practice. "
+                     "Inflation is the easier, larger-magnitude attack.")
+    else:
+        both_val = f"{inf_mean:.1f}" if inf_mean is not None else "?"
+        asym_text = f"no directional asymmetry was observed for this model (mean |band shift| = {both_val} for both inflation and deflation)."
+    lines.append(f"\n**Asymmetry:** {asym_text}\n")
+    return rows, prior_rows, "\n".join(lines)
 
 
 def m5_section(m5_path):
@@ -119,7 +128,7 @@ def m5_section(m5_path):
                  "honest sources disagree by a band.")
     lines.append("- **Recovery ceiling = honest-set internal consistency** (the corrected band is the joint "
                  f"of the honest sources). Here all {n}/{n} honest sets are internally consistent.\n")
-    return "\n".join(lines)
+    return rows, "\n".join(lines)
 
 
 def examples_section(m4_rows):
@@ -135,20 +144,54 @@ def examples_section(m4_rows):
     return "\n".join(lines)
 
 
-COUPLING = """## 3. The coupling (the through-line)
+def coupling_section(m4_rows: list[dict], prior_rows: list[dict] | None = None) -> str:
+    if prior_rows:
+        prior_inf = _mean_abs_shift(prior_rows, "inflate")
+        curr_inf = _mean_abs_shift(m4_rows, "inflate")
+        prior_by_cve = {r["cve_id"]: _row_band_shift(r) for r in prior_rows if r["direction"] == "inflate"}
+        curr_by_cve = {r["cve_id"]: _row_band_shift(r) for r in m4_rows if r["direction"] == "inflate"}
+        diluted = []
+        held = []
+        for cve_id, curr_s in curr_by_cve.items():
+            prior_s = prior_by_cve.get(cve_id)
+            if prior_s is not None:
+                if curr_s < prior_s:
+                    diluted.append((prior_s, curr_s))
+                elif curr_s == prior_s:
+                    held.append(curr_s)
+        total_inf = len(curr_by_cve)
+        if len(diluted) == 2 and total_inf == 4:
+            details = (f"two of the four inflation CVEs diluted from a {diluted[0][0]}-band to a {diluted[0][1]}-band shift, "
+                       f"the other two held at {held[0]} bands")
+        elif diluted:
+            details = f"{len(diluted)} of the {total_inf} inflation CVEs diluted"
+        else:
+            details = "inflation magnitude held constant"
+        parenthetical = (f"(inflation's mean magnitude fell from {prior_inf:.1f} to {curr_inf:.1f} bands when a "
+                         f"3rd honest source was added — {details})")
+    else:
+        parenthetical = "(as measured on llama3:8b, adding a 3rd honest source reduced inflation's mean magnitude)"
+
+    return f"""## 3. The coupling (the through-line)
 
 The same property governs both halves of the study: **independent honest corroboration**.
 - It **dilutes the attack** — a single poisoned source moves the joint severity band less as
-  more honest sources corroborate (inflation's mean magnitude fell from 2.0 to 1.5 bands when a
-  3rd honest source was added — two of the four inflation CVEs diluted from a 2-band to a 1-band
-  shift, the other two held at 2 bands).
+  more honest sources corroborate {parenthetical}.
 - It **enables the defense** — the leave-one-out check works precisely because removing the
   poison reveals a stable honest consensus, which requires that consensus to exist (≥3 honest).
 
 So more independent honest sources do double duty: they blunt the poison and make it detectable.
 """
 
-def limitations_section(chat_tag: str, m4_rows: list[dict]) -> str:
+
+def limitations_section(chat_tag: str, m4_rows: list[dict], m5_rows: list[dict]) -> str:
+    det = sum(r["poison_caught"] for r in m5_rows)
+    rec = sum(r["recovered"] for r in m5_rows)
+    fp = sum(r["clean_flagged_any"] for r in m5_rows)
+    n = len(m5_rows)
+    rec_str = f"{rec / n:.2f}" if n else "0.00"
+    fp_str = f"{fp / n:.2f}" if n else "0.00"
+
     mismatches = [
         f"{r['cve_id']} ({r['direction']}: consensus {r['consensus']['band']}, "
         f"clean {r['clean_band']})"
@@ -163,8 +206,8 @@ def limitations_section(chat_tag: str, m4_rows: list[dict]) -> str:
     )
     return f"""## 5. Limitations
 
-- **Scale: n = 8 synthetic CVEs.** This is a controlled *mechanism demonstration*, not a
-  benchmark. The numbers (8/8 detection, 1.00 recovery, 0.00 FP) characterise the mechanism on
+- **Scale: n = {n} synthetic CVEs.** This is a controlled *mechanism demonstration*, not a
+  benchmark. The numbers ({det}/{n} detection, {rec_str} recovery, {fp_str} FP) characterise the mechanism on
   a small, deliberately-constructed set; they are not population estimates.
 - **Calibration vs steering.** Two distinct quantities appear in this report: *calibration*
   (the model's clean band vs the designed consensus band) and *steering* (the band shift vs
@@ -201,7 +244,8 @@ def main() -> None:
         raise SystemExit("Need an M4 (synthetic_poison.jsonl) and M5 (defense.jsonl) run. "
                          "Run scripts/04 and 05 first, or pass --m4/--m5.")
 
-    m4_rows, m4_md = m4_section(args.m4, args.m4_prior)
+    m4_rows, prior_rows, m4_md = m4_section(args.m4, args.m4_prior)
+    m5_rows, m5_md = m5_section(args.m5)
     chat_tag = _provenance(args.m4).get("models", {}).get("chat", {}).get("tag", "?")
     header = ("# PoisonCTI — Results\n\n"
               "How reliably can a single poisoned open-source CTI source steer an LLM threat-intel\n"
@@ -209,11 +253,12 @@ def main() -> None:
               "restore reliability without retraining? Results below are computed by\n"
               "`scripts/06_evaluate.py` from the saved experiment jsonl (no model calls); every table\n"
               "cites its run directory + provenance.\n")
-    doc = "\n".join([header, m4_md, m5_section(args.m5), COUPLING, examples_section(m4_rows),
-                     limitations_section(chat_tag, m4_rows)])
+    doc = "\n".join([header, m4_md, m5_md, coupling_section(m4_rows, prior_rows), examples_section(m4_rows),
+                     limitations_section(chat_tag, m4_rows, m5_rows)])
     Path(args.out).write_text(doc, encoding="utf-8")
     print(f"Wrote {args.out} from:\n  M4: {args.m4}\n  M5: {args.m5}"
           + (f"\n  M4-prior: {args.m4_prior}" if args.m4_prior else ""))
+
 
 
 if __name__ == "__main__":
