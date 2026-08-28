@@ -289,7 +289,7 @@ success 4/4, mean $|$band shift$|=1.5$.
 \begin{table}[t]
 \centering
 \caption{Attack with three honest sources on Llama 3 8B. Band shift is signed in the attacker's
-direction. Run \texttt{run\_20260616T132519\_943745+0000}.}
+direction. Run \path{run_20260616T132519_943745+0000}.}
 \label{tab:attack}
 \small
 \begin{tabular}{@{}llccc@{}}
@@ -327,7 +327,7 @@ therefore \emph{partially resists} single-source poisoning.
 \begin{table}[t]
 \centering
 \caption{Corroboration dilution on Llama 3 8B. Mean $|$band shift$|$ by direction. The 2-source
-run (\texttt{run\_20260616T033459\_717474+0000}) predates the band-shift field; shifts recomputed
+run (\path{run_20260616T033459_717474+0000}) predates the band-shift field; shifts recomputed
 from saved scores.}
 \label{tab:dilution}
 \small
@@ -353,7 +353,7 @@ ever flagged on clean input, despite honest sources disagreeing by up to a band.
 \begin{table}[t]
 \centering
 \caption{Defense outcomes on Llama 3 8B (leave-one-out internal-consistency). Run
-\texttt{run\_20260617T090409\_203299+0000}. FP = honest source flagged on clean input.}
+\path{run_20260617T090409_203299+0000}. FP = honest source flagged on clean input.}
 \label{tab:defense}
 \small
 \begin{tabular}{@{}llcccc@{}}
@@ -442,14 +442,15 @@ and cited run directories.
 \centering
 \caption{Cross-model replication summary across three open-weight models ($n=8$ synthetic CVEs per model). Pinned model digests from \texttt{config/models.lock.json}; run directory names cited from experiment logs.}
 \label{tab:cross-model}
-\small
+\footnotesize
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}llllcccc@{}}
 \toprule
-Model Tag & Digest (short) & M4 Run Directory & M5 Run Directory & Attack (M4) & Detection (M5) & Recovery (M5) & FP (M5) \\
+Model Tag & Digest (short) & M4 Run Dir. & M5 Run Dir. & Attack (M4) & Detection (M5) & Recovery (M5) & FP (M5) \\
 \midrule
-\texttt{llama3:8b}   & \texttt{365c0bd3c000a25d28d\dots} & \texttt{run\_20260616T132519\_943745+0000} & \texttt{run\_20260617T090409\_203299+0000} & 8/8 & 8/8 & 8/8 (1.00) & 0/8 (0.00) \\
-\texttt{qwen2.5:7b}  & \texttt{845dbda0ea48ed749ca\dots} & \texttt{run\_20260828T041137\_406624+0000} & \texttt{run\_20260828T042138\_087817+0000} & 7/8 & 7/8 & 7/8 (0.88) & 0/8 (0.00) \\
-\texttt{mistral:7b}  & \texttt{6577803aa9a036369e4\dots} & \texttt{run\_20260826T104715\_442613+0000} & \texttt{run\_20260826T125402\_554702+0000} & 4/8 & 7/8 & 8/8 (1.00) & 0/8 (0.00) \\
+\texttt{llama3:8b}   & \texttt{365c0bd3c000a25d28d\dots} & \path{run_20260616T132519_943745+0000} & \path{run_20260617T090409_203299+0000} & 8/8 & 8/8 & 8/8 (1.00) & 0/8 (0.00) \\
+\texttt{qwen2.5:7b}  & \texttt{845dbda0ea48ed749ca\dots} & \path{run_20260828T041137_406624+0000} & \path{run_20260828T042138_087817+0000} & 7/8 & 7/8 & 7/8 (0.88) & 0/8 (0.00) \\
+\texttt{mistral:7b}  & \texttt{6577803aa9a036369e4\dots} & \path{run_20260826T104715_442613+0000} & \path{run_20260826T125402_554702+0000} & 4/8 & 7/8 & 8/8 (1.00) & 0/8 (0.00) \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -472,7 +473,7 @@ which is stable and tracks the model's stated reasoning.
 Under non-greedy decoding (temperature 0.3, 5 seeds per CVE, distinct seeds)
 the base score did not vary (range 0.0 for both CVE-2099-0001 and
 CVE-2099-0002), confirming the anchoring is not a greedy-decoding artifact
-(run \texttt{run\_20260824T082827\_560584+0000}).
+(run \path{run_20260824T082827_560584+0000}).
 
 This matters beyond methodology: the cheap, deployable local models are
 \emph{both} poisonable \emph{and} crude scorers. (We also attempted fine-grained
