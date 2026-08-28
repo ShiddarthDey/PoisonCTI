@@ -1,7 +1,7 @@
 {
   "_comment": "Machine-resolved Ollama model pins, keyed by tag. Extend with `python scripts/00_pin_models.py --add <tag>`. COMMIT this file.",
   "ollama_version": "ollama version is 0.23.4",
-  "resolved_utc": "2026-08-24T10:16:38.029284+00:00",
+  "resolved_utc": "2026-08-28T04:10:28.055236+00:00",
   "models": {
     "chat": {
       "llama3:8b": {
@@ -12,6 +12,11 @@
       "mistral:7b": {
         "digest": "6577803aa9a036369e481d648a2baebb381ebc6e897f2bb9a766a2aa7bfbc1cf",
         "parameter_size": "7.2B",
+        "quantization": "Q4_K_M"
+      },
+      "qwen2.5:7b": {
+        "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+        "parameter_size": "7.6B",
         "quantization": "Q4_K_M"
       }
     },
