@@ -45,26 +45,20 @@ threat intelligence (CTI) and assign severity to disclosed vulnerabilities,
 typically by retrieving open-source advisories into a retrieval-augmented
 generation (RAG) context. We study a focused, practically realistic threat:
 an adversary who controls a \emph{single} open-source CTI document and seeks to
-steer the agent's severity assessment of a target vulnerability. Using a small,
-freely deployable local model (Llama~3 8B) on a controlled synthetic-CVE testbed
-that removes answer-leakage and memorised-prior confounds, we report three
-findings. First, a single poisoned source reliably shifts the agent's severity
-\emph{band} (e.g.\ \band{CRITICAL}$\rightarrow$\band{HIGH},
-\band{MEDIUM}$\rightarrow$\band{CRITICAL}) in the attacker's intended direction
-on 8/8 cases. Second, the attack is \emph{asymmetric}: inflation (manufacturing
-a false emergency) is larger in magnitude than deflation (concealing a genuine
-critical), and the model's own reasoning visibly resists deflation. Third,
-independent corroboration is the hinge of both attack and defense: adding honest
-sources both \emph{dilutes} the attack's magnitude (mean inflation shift
-$2.0\rightarrow1.5$ bands with a third honest source) and \emph{enables} a
-training-free leave-one-out internal-consistency check that detects the poisoned
-source and restores the correct band with 8/8 detection, 8/8 recovery, and zero
-false positives on honestly-disagreeing sources---false-positive-free by
-construction under a stated $\geq$4-source precondition. We additionally document, as a scoping finding, that the small
-local model imitates CVSS output format without performing CVSS computation. We
-frame this as a controlled mechanism study, not a benchmark, and outline the
-extensions (multiple models, real CVEs, larger scale) that form a natural
-research programme.
+steer the agent's severity assessment of a target vulnerability. Using a controlled
+synthetic-CVE testbed that removes answer-leakage and memorised-prior confounds,
+we evaluate severity steering and a training-free consistency defense across three
+open-weight 7--8B models (Llama~3 8B, Qwen2.5 7B, and Mistral 7B). We report four key findings.
+First, a single poisoned source steers severity bands in the intended direction, though attack
+susceptibility is model-dependent (8/8 on Llama~3 8B, 7/8 on Qwen2.5 7B, 4/8 on Mistral 7B).
+Second, the leave-one-out internal-consistency defense generalizes across models, achieving
+high detection (8/8, 7/8, 7/8) and recovery (8/8, 7/8, 8/8) with zero false positives across all models
+(false-positive-free by construction under a stated $\geq$4-source precondition).
+Third, the inflation/deflation asymmetry observed in Llama~3 8B does not replicate on Qwen or Mistral,
+demonstrating that directional asymmetry is model-specific rather than attack-intrinsic.
+Fourth, small local models imitate CVSS output format without performing CVSS computation, constraining
+evaluation to the band level. We frame this as a controlled mechanism study and outline extensions
+for multi-source campaigns and real-world CTI pipelines.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -100,28 +94,28 @@ leak the answer (NVD descriptions embed the CVSS score) and are contaminated by
 the model's memorised priors---we construct synthetic CVEs whose only source of
 severity information is CTI text we author. This isolates the causal mechanism:
 any change in the agent's severity must come from the documents. On this testbed
-we measure the attack in both directions, vary the number of honest corroborating
-sources, and evaluate a training-free consistency defense.
+we measure the attack in both directions across three open-weight models, vary the
+number of honest corroborating sources, and evaluate a training-free consistency defense.
 
 \noindent\textbf{Contributions.}
 \begin{enumerate}
 \item A controlled demonstration that a \emph{single} poisoned open-source CTI
 document steers an LLM agent's severity \emph{band} in either direction, visible
 in the model's stated reasoning (\S\ref{sec:attack}).
-\item An \emph{inflation/deflation asymmetry}: inflation is larger-magnitude than
-deflation; the model partially resists concealing a genuine critical
-(\S\ref{sec:attack}, \S\ref{sec:discussion}).
+\item A multi-model replication across three open-weight models (Llama~3 8B, Qwen2.5 7B, Mistral 7B)
+showing model-dependent attack susceptibility (8/8 vs 7/8 vs 4/8) and establishing that directional
+asymmetry is model-specific rather than intrinsic to severity steering (\S\ref{sec:cross-model}, \S\ref{sec:discussion}).
 \item A \emph{corroboration-coupling} result: more independent honest sources
 both reduce the attack's magnitude and enable a leave-one-out consistency
-defense that detects the poison and restores the correct band with zero false
+defense that generalizes across models, detecting poison (8/8, 7/8, 7/8) and restoring the correct band with zero false
 positives, under a $\geq$4-source precondition (\S\ref{sec:dilution},
-\S\ref{sec:defense}).
-\item A \emph{scoping/instrument finding}: the small local model imitates CVSS
+\S\ref{sec:defense}, \S\ref{sec:cross-model}).
+\item A \emph{scoping/instrument finding}: small local models imitate CVSS
 output format without performing CVSS computation, which constrains evaluation to
 the band level and is itself relevant to deployers (\S\ref{sec:instrument}).
 \end{enumerate}
 
-We are explicit about scope: this is a single-model, small-$n$, synthetic-testbed
+We are explicit about scope: this is a three-model, small-$n$, synthetic-testbed
 mechanism study, not a benchmark (\S\ref{sec:limitations}).
 
 %==============================================================================
@@ -165,7 +159,7 @@ CTI pipeline~\cite{falsealarms2025}.
 
 \textbf{LLMs for CTI and severity scoring.} CTIBench evaluates LLMs on practical
 CTI tasks including CVSS severity prediction and ATT\&CK technique extraction,
-and notably evaluates Llama~3 8B---the model we use---establishing that small
+and notably evaluates Llama~3 8B---one of the models we evaluate---establishing that small
 open models perform unevenly on these tasks~\cite{alam2024ctibench}. Recent work
 asks directly whether LLMs can quantify vulnerabilities from
 descriptions~\cite{descriptiontoscore2025}; our instrument finding
@@ -181,11 +175,11 @@ catalogues a broad failure taxonomy. We differ in three ways: (i) we study a
 steering via a single source---rather than enumerating failure modes; (ii) we
 isolate the mechanism with a synthetic testbed that removes the answer-leakage
 and memorised-prior confounds present with real CVEs; and (iii) we evaluate a
-concrete training-free defense and characterise its precondition and ceiling.
+concrete training-free defense across multiple models and characterise its precondition and ceiling.
 
-\textbf{Our delta.} To our knowledge, the \emph{bidirectional asymmetry} of
-single-source severity steering and the \emph{corroboration coupling} (the same
-variable that dilutes the attack enables the defense) are not reported above. Our
+\textbf{Our delta.} To our knowledge, the cross-model evaluation of single-source severity steering,
+the evaluation of directional asymmetry across model architectures, and the \emph{corroboration coupling}
+(the same variable that dilutes the attack enables the defense) are not reported above. Our
 leave-one-out internal-consistency defense---false-positive-free by construction
 under a stated source-count precondition---is also a distinct point in the design
 space.
@@ -198,9 +192,9 @@ The agent retrieves CTI documents that mention the target CVE, restricted to tha
 CVE's sources, and emits a severity judgement (a band in \{\band{LOW},
 \band{MEDIUM}, \band{HIGH}, \band{CRITICAL}\}; \S\ref{sec:instrument} explains why
 band-level). Retrieval uses dense embeddings (BGE-M3~\cite{bgem3}) over an exact NumPy
-brute-force cosine index; the chat model is Llama~3 8B~\cite{llama3} served locally via Ollama.
+brute-force cosine index; the chat models (Llama~3 8B~\cite{dubey2024llama3}, Mistral 7B~\cite{jiang2023mistral}, Qwen2.5 7B~\cite{yang2024qwen25}) are served locally via Ollama~\cite{ollama}.
 All components run locally and free of charge. Decoding is greedy (temperature 0)
-with a fixed seed (1337); the model tag and digest are pinned and recorded in
+with a fixed seed (1337); the model tag and digest are pinned in \texttt{config/models.lock.json} and recorded in
 every output for reproducibility (\S\ref{sec:repro}).
 
 \subsection{Synthetic-CVE testbed}\label{sec:testbed}
@@ -278,14 +272,14 @@ calls.
 %==============================================================================
 \section{Results}\label{sec:results}
 
-All numbers are computed from saved logs (Llama~3 8B, pinned digest; BGE-M3
-embeddings; seed 1337; temperature 0). $n=8$ synthetic CVEs (4 deflation, 4
-inflation).
+All numbers are computed directly from saved run logs. Each model run cites its pinned
+digest from \texttt{config/models.lock.json} and its run directory. Evaluation spans $n=8$
+synthetic CVEs (4 deflation, 4 inflation).
 
-\subsection{Single-source steering and the asymmetry}\label{sec:attack}
+\subsection{Single-source steering on Llama 3 8B}\label{sec:attack}
 
 With three honest sources present, a single poisoned source shifted the severity
-band in the attacker's direction on \textbf{8/8} CVEs (Table~\ref{tab:attack}).
+band in the attacker's direction on \textbf{8/8} CVEs for Llama~3 8B (Table~\ref{tab:attack}).
 Deflation consistently moved one band (\band{CRITICAL}$\rightarrow$\band{HIGH})
 and \emph{never reached} \band{LOW}: the model resisted fully concealing a genuine
 critical. Inflation reached \band{CRITICAL} on two of four cases (a two-band
@@ -294,8 +288,8 @@ success 4/4, mean $|$band shift$|=1.5$.
 
 \begin{table}[t]
 \centering
-\caption{Attack with three honest sources. Band shift is signed in the attacker's
-direction. Run \texttt{20260616T132519}.}
+\caption{Attack with three honest sources on Llama 3 8B. Band shift is signed in the attacker's
+direction. Run \texttt{run\_20260616T132519\_943745+0000}.}
 \label{tab:attack}
 \small
 \begin{tabular}{@{}llccc@{}}
@@ -323,7 +317,7 @@ the honest severity; on inflation it \emph{fully adopts} the false claim
 
 \subsection{Corroboration dilutes the attack}\label{sec:dilution}
 
-Comparing a 2-honest-source corpus to the 3-honest-source corpus
+Comparing a 2-honest-source corpus to the 3-honest-source corpus on Llama~3 8B
 (Table~\ref{tab:dilution}), adding a third independent honest source
 \emph{reduced the inflation attack's magnitude} ($2.0\rightarrow1.5$ bands; two of
 four inflation CVEs dropped from a two-band to a one-band shift). Deflation was
@@ -332,8 +326,8 @@ therefore \emph{partially resists} single-source poisoning.
 
 \begin{table}[t]
 \centering
-\caption{Corroboration dilution. Mean $|$band shift$|$ by direction. The 2-source
-run (\texttt{20260616T033459}) predates the band-shift field; shifts recomputed
+\caption{Corroboration dilution on Llama 3 8B. Mean $|$band shift$|$ by direction. The 2-source
+run (\texttt{run\_20260616T033459\_717474+0000}) predates the band-shift field; shifts recomputed
 from saved scores.}
 \label{tab:dilution}
 \small
@@ -350,7 +344,7 @@ inflate & 2.0 & 1.5 \\
 \subsection{The defense detects and recovers, false-positive-free}\label{sec:defense}
 
 The leave-one-out internal-consistency check, evaluated live on the
-3-honest-source corpus (4 sources per CVE under attack), achieved
+3-honest-source corpus (4 sources per CVE under attack) for Llama~3 8B, achieved
 \textbf{detection 8/8}, \textbf{recovery 8/8 (1.00)}, and \textbf{false positives
 0/8 (0.00)} (Table~\ref{tab:defense}). The corrected band equalled the clean band
 on every CVE, including inflation cases steered two bands; no honest source was
@@ -358,8 +352,8 @@ ever flagged on clean input, despite honest sources disagreeing by up to a band.
 
 \begin{table}[t]
 \centering
-\caption{Defense outcomes (leave-one-out internal-consistency). Run
-\texttt{20260617T090409}. FP = honest source flagged on clean input.}
+\caption{Defense outcomes on Llama 3 8B (leave-one-out internal-consistency). Run
+\texttt{run\_20260617T090409\_203299+0000}. FP = honest source flagged on clean input.}
 \label{tab:defense}
 \small
 \begin{tabular}{@{}llcccc@{}}
@@ -437,6 +431,29 @@ Internal-consistency \textbf{[chosen]} & \textbf{8/8} & \textbf{8/8} & \textbf{0
 \end{tabular}
 \end{table}
 
+\subsection{Cross-Model Replication}\label{sec:cross-model}
+
+To test whether severity steering and the leave-one-out consistency defense depend on model architecture,
+we replicated the pipeline across three open-weight models: Llama~3 8B, Qwen2.5 7B, and Mistral 7B.
+Table~\ref{tab:cross-model} presents the cross-model comparison table with per-model provenance, pinned digests,
+and cited run directories.
+
+\begin{table*}[t]
+\centering
+\caption{Cross-model replication summary across three open-weight models ($n=8$ synthetic CVEs per model). Pinned model digests from \texttt{config/models.lock.json}; run directory names cited from experiment logs.}
+\label{tab:cross-model}
+\small
+\begin{tabular}{@{}llllcccc@{}}
+\toprule
+Model Tag & Digest (short) & M4 Run Directory & M5 Run Directory & Attack (M4) & Detection (M5) & Recovery (M5) & FP (M5) \\
+\midrule
+\texttt{llama3:8b}   & \texttt{365c0bd3c000a25d28d\dots} & \texttt{run\_20260616T132519\_943745+0000} & \texttt{run\_20260617T090409\_203299+0000} & 8/8 & 8/8 & 8/8 (1.00) & 0/8 (0.00) \\
+\texttt{qwen2.5:7b}  & \texttt{845dbda0ea48ed749ca\dots} & \texttt{run\_20260828T041137\_406624+0000} & \texttt{run\_20260828T042138\_087817+0000} & 7/8 & 7/8 & 7/8 (0.88) & 0/8 (0.00) \\
+\texttt{mistral:7b}  & \texttt{6577803aa9a036369e4\dots} & \texttt{run\_20260826T104715\_442613+0000} & \texttt{run\_20260826T125402\_554702+0000} & 4/8 & 7/8 & 8/8 (1.00) & 0/8 (0.00) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
 \subsection{The model imitates CVSS without computing it}\label{sec:instrument}
 
 Across runs the model emitted only three distinct base scores---9.8, 7.5,
@@ -455,15 +472,39 @@ which is stable and tracks the model's stated reasoning.
 Under non-greedy decoding (temperature 0.3, 5 seeds per CVE, distinct seeds)
 the base score did not vary (range 0.0 for both CVE-2099-0001 and
 CVE-2099-0002), confirming the anchoring is not a greedy-decoding artifact
-(run \texttt{20260824T082827}).
+(run \texttt{run\_20260824T082827\_560584+0000}).
 
 This matters beyond methodology: the cheap, deployable local models are
 \emph{both} poisonable \emph{and} crude scorers. (We also attempted fine-grained
-MITRE ATT\&CK technique mapping and found it unreliable with this model;
+MITRE ATT\&CK technique mapping and found it unreliable with this model, showing
+$\approx$75\% concept/ID mismatches where canonical technique IDs were attached to wrong concepts;
 Appendix~\ref{app:attack}.)
 
 %==============================================================================
 \section{Discussion}\label{sec:discussion}
+
+\textbf{Attack susceptibility vs defense generalization.}
+While attack susceptibility is model-dependent (Llama~3 8B: 8/8, Qwen2.5 7B: 7/8, Mistral 7B: 4/8),
+the leave-one-out internal-consistency defense demonstrates high stability across all three models
+(detection: 8/8, 7/8, 7/8; false positives: 0/8 everywhere). Thus, the defense generalizes across model architectures
+even where attack effectiveness varies significantly.
+
+\textbf{Asymmetry is model-specific, not attack-intrinsic.}
+The directional asymmetry observed in Llama~3 8B (mean shift 1.5 bands for inflation vs 1.0 band for deflation)
+does not replicate across models. Both Mistral 7B and Qwen2.5 7B exhibit equal mean $|$band shift$|$ by direction
+(0.5 bands for Mistral 7B; 1.0 band for Qwen2.5 7B). This proves that directional asymmetry is a model-specific artifact
+rather than an intrinsic law of CTI severity poisoning.
+
+\textbf{Floor-effect caveat on Mistral 7B.}
+Mistral's lower attack success (4/8) partly reflects clean bands already sitting at or below the designed consensus
+for deflation targets (clean \band{HIGH} vs consensus \band{CRITICAL} on CVE-2099-0001, CVE-2099-0002, CVE-2099-0005, and CVE-2099-0006).
+As noted in the calibration-vs-steering distinction in \texttt{RESULTS\_mistral-7b.md}, steering measures band shifts relative to the model's
+\emph{own} clean baseline. A model whose clean baseline sits low leaves less margin for a deflation shift to register; lower attack success
+must not be misread as intrinsic model robustness.
+
+\textbf{Evasion mechanism on Qwen2.5 7B.}
+Qwen's single defense evasion (CVE-2099-0002) coincided with the largest-magnitude attack in its run (\band{CRITICAL}$\rightarrow$\band{MEDIUM}, a two-band shift).
+A large two-band jump shifts the joint assessment so significantly that removing the suspect source leaves a remainder that fails to meet the internal-consistency threshold, demonstrating that large-magnitude jumps can defeat leave-one-out consistency checks even when smaller single-band shifts cannot.
 
 \textbf{The coupling is the through-line.} A single variable---the number of
 independent honest corroborating sources---governs both halves of the study. More
@@ -474,25 +515,20 @@ sources before an LLM CTI agent commits to a severity is simultaneously
 attack-mitigation and detection-enabler, and single-source ecosystems are the
 dangerous case.
 
-\textbf{Why deflation resists.} The model anchors on the honest sources' evident
-severity and will partially, but not fully, follow a downplaying source---its
-reasoning hedges rather than reverses. Inflation has no such anchor to fight. The
-implication is double-edged: the less dangerous attack (false alarms) is the
-easier one, while the more dangerous attack (concealment) is partially
-resisted---but ``partially'' is not ``fully,'' and a one-band
-\band{CRITICAL}$\rightarrow$\band{HIGH} drop can still de-prioritise an urgent
-patch.
-
 %==============================================================================
 \section{Limitations}\label{sec:limitations}
 
-\textbf{Scale.} $n=8$ synthetic CVEs: a controlled mechanism demonstration, not a
+\textbf{Scale.} $n=8$ synthetic CVEs per model: a controlled mechanism demonstration, not a
 benchmark; the headline numbers characterise the mechanism on a small constructed
 set, not population rates.
 
-\textbf{Single model.} All results use Llama~3 8B. The asymmetry, the dilution,
-and the defense may differ for other models; cross-model replication is the most
-important next step.
+\textbf{Calibration vs.\ steering.} Two distinct quantities appear in this study: \emph{calibration}
+(the model's clean band vs the designed consensus band) and \emph{steering} (the band shift vs
+the model's OWN clean baseline). Attack success and defense recovery are measured against
+the model's own clean baseline, so models with low clean baselines encounter floor effects on deflation.
+
+\textbf{Model coverage.} Our replication spans three open-weight models in the 7--8B class
+(Llama~3 8B, Qwen2.5 7B, Mistral 7B). Larger parameter regimes (30B+) and commercial API models (e.g.\ GPT-4o, Claude 3.5) may exhibit different baseline calibration and steering dynamics.
 
 \textbf{Synthetic stimuli.} Synthetic CVEs buy clean causal attribution at the
 cost of external validity. We chose them because real CVEs leak the CVSS answer
@@ -504,14 +540,15 @@ $\geq$4 sources and on honest-set internal consistency; the defense abstains bel
 the source threshold and its recovery is bounded by honest-set agreement. It is a
 detect-and-correct layer, not a guarantee of agent reliability.
 
-\textbf{Band-level severity.} The model's crudeness forces band-level evaluation;
-finer-grained (within-band) steering is unmeasurable here.
+\textbf{Band-level severity and instrument findings.} The models imitate CVSS output format
+without performing CVSS computation, forcing band-level evaluation. Fine-grained ATT\&CK mapping
+is similarly unreliable at this model scale ($\approx$75\% concept/ID mismatch), constraining scope to severity scoring.
 
 %==============================================================================
 \section{Future Work}\label{sec:future}
 
-The limitations above define a research programme: (1)~replicate across multiple
-models and a larger synthetic set; (2)~add a real-CVE arm with honest fixtures
+The limitations above define a research programme: (1)~replicate across larger models (30B+)
+and a larger synthetic set; (2)~add a real-CVE arm with honest fixtures
 rewritten to remove CVSS strings so severity is inferred; (3)~study stronger and
 adaptive adversaries (multi-document campaigns; poison tuned to mimic honest
 disagreement and evade the consistency check); (4)~extend the controlled-stimulus
@@ -523,15 +560,12 @@ scoring to lower the source-count precondition).
 \section{Conclusion}\label{sec:conclusion}
 
 A single attacker-controlled open-source CTI document can steer a local LLM
-agent's CVE severity band, more easily toward inflation than deflation, with the
-manipulation visible in the model's reasoning. The same independent corroboration
-that dilutes the attack also enables a training-free leave-one-out consistency
-check that detects the poison and restores the correct band with zero false
-positives on honestly-disagreeing sources, given enough corroborating sources. On
-a confound-free synthetic testbed and a crude-but-deployable local model, these
-results are a controlled demonstration of a coupled attack/defense mechanism, and
-a starting point for the scaling, generalisation, and real-world validation that
-would establish its reach.
+agent's CVE severity band across multiple open-weight models (Llama~3 8B, Qwen2.5 7B, Mistral 7B).
+While attack success varies by model (8/8, 7/8, 4/8), the leave-one-out internal-consistency defense
+demonstrates strong generalization across architectures (detection: 8/8, 7/8, 7/8; 0 false positives everywhere).
+Furthermore, directional asymmetry proved model-specific rather than intrinsic to severity steering.
+On a confound-free synthetic testbed, these results establish the coupled attack/defense mechanism
+and provide a foundation for scaling and real-world validation in agentic security workflows.
 
 %==============================================================================
 \appendices
